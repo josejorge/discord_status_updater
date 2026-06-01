@@ -1,0 +1,48 @@
+## Build outputs
+bin/
+obj/
+out/
+
+## Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.pidb
+*.sln.docstates
+
+## .NET
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/Properties/launchSettings.json
+
+## Publish
+publish/
+PublishProfiles/
+
+## OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Logs
+*.log
+logs/
+
+## User-specific app data (not the default presets)
+AppData/
+
+## NuGet
+packages/
+*.nupkg
+.nuget/
+
+## Coverage
+TestResults/
+coverage/
+*.coveragexml
+*.coverage

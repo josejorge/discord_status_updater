@@ -1,0 +1,372 @@
+<Window x:Class="DiscordStatusUpdater.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:DiscordStatusUpdater.ViewModels"
+        mc:Ignorable="d"
+        Title="Discord Status Updater"
+        Width="540" MinWidth="480"
+        Height="790" MinHeight="600"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        Background="{StaticResource Bg}"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="5"
+                      UseAeroCaptionButtons="False"
+                      GlassFrameThickness="-1"
+                      CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="28"/>
+        </Grid.RowDefinitions>
+
+        <!-- ══ Title Bar ══════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="{StaticResource BgTertiary}">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <Ellipse Width="14" Height="14" Fill="{StaticResource Blurple}" Margin="0,0,8,0"/>
+                    <TextBlock Text="Discord Status Updater"
+                               Foreground="{StaticResource TextSecondary}"
+                               FontSize="12" FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="─"
+                            Style="{StaticResource TitleBarButton}"
+                            Click="MinimizeButton_Click"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            ToolTip="Minimize"/>
+                    <Button Content="✕"
+                            Style="{StaticResource TitleBarCloseButton}"
+                            Click="CloseButton_Click"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            ToolTip="Close"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ══ Main Content ═══════════════════════════════════════════════ -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="16,14,8,14">
+            <StackPanel Margin="0,0,8,0">
+
+                <!-- ── CONNECTION ─────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="CONNECTION" Style="{StaticResource SectionHeader}"/>
+
+                        <TextBlock Text="APPLICATION ID" Style="{StaticResource LabelText}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding ApplicationId, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="e.g. 1234567890123456789"
+                                     IsEnabled="{Binding CanEditApplicationId}"/>
+                            <Button Grid.Column="2"
+                                    Content="Dev Portal"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding OpenDevPortalCommand}"
+                                    ToolTip="Open Discord Developer Portal"
+                                    WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"
+                                    Content="Connect"
+                                    Command="{Binding ConnectCommand}"/>
+                            <Button Grid.Column="2"
+                                    Content="Disconnect"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding DisconnectCommand}"/>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Style="{StaticResource StatusDot}"
+                                     Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
+                            <TextBlock Text="{Binding ConnectionStatusText}"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── PRESET ─────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="PRESET" Style="{StaticResource SectionHeader}"/>
+
+                        <TextBlock Text="LOAD PRESET" Style="{StaticResource LabelText}"/>
+                        <ComboBox ItemsSource="{Binding Presets}"
+                                  SelectedItem="{Binding SelectedPreset}"
+                                  DisplayMemberPath="Name"
+                                  Margin="0,0,0,10"/>
+
+                        <TextBlock Text="PRESET NAME" Style="{StaticResource LabelText}"/>
+                        <TextBox Text="{Binding CurrentPresetName, UpdateSourceTrigger=PropertyChanged}"
+                                 Tag="Enter a name for this preset"
+                                 Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="New"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding NewPresetCommand}"/>
+                            <Button Grid.Column="2" Content="Save"
+                                    Command="{Binding SavePresetCommand}"/>
+                            <Button Grid.Column="4" Content="Delete"
+                                    Style="{StaticResource DangerButton}"
+                                    Command="{Binding DeletePresetCommand}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── ACTIVITY DETAILS ───────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="ACTIVITY DETAILS" Style="{StaticResource SectionHeader}"/>
+
+                        <TextBlock Text="DETAILS  (first line)" Style="{StaticResource LabelText}"/>
+                        <TextBox Text="{Binding Details, UpdateSourceTrigger=PropertyChanged}"
+                                 Tag="e.g. Editing main.cs"
+                                 Margin="0,0,0,10"/>
+
+                        <TextBlock Text="STATE  (second line)" Style="{StaticResource LabelText}"/>
+                        <TextBox Text="{Binding State, UpdateSourceTrigger=PropertyChanged}"
+                                 Tag="e.g. In workspace"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── IMAGES ─────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="IMAGES" Style="{StaticResource SectionHeader}"/>
+
+                        <TextBlock Text="LARGE IMAGE" Style="{StaticResource LabelText}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding LargeImageKey, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="Asset key name"/>
+                            <TextBox Grid.Column="2"
+                                     Text="{Binding LargeImageText, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="Hover tooltip"/>
+                        </Grid>
+
+                        <TextBlock Text="SMALL IMAGE" Style="{StaticResource LabelText}"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding SmallImageKey, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="Asset key name"/>
+                            <TextBox Grid.Column="2"
+                                     Text="{Binding SmallImageText, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="Hover tooltip"/>
+                        </Grid>
+
+                        <TextBlock Text="Image keys must match asset names uploaded in the Discord Developer Portal."
+                                   Style="{StaticResource HintText}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── BUTTONS ────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="CLICKABLE BUTTONS  (optional)" Style="{StaticResource SectionHeader}"/>
+
+                        <TextBlock Text="BUTTON 1" Style="{StaticResource LabelText}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding Button1Label, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="Label (max 32 chars)"/>
+                            <TextBox Grid.Column="2"
+                                     Text="{Binding Button1Url, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="https://..."/>
+                        </Grid>
+
+                        <TextBlock Text="BUTTON 2" Style="{StaticResource LabelText}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding Button2Label, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="Label (max 32 chars)"/>
+                            <TextBox Grid.Column="2"
+                                     Text="{Binding Button2Url, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="https://..."/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── OPTIONS ────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="OPTIONS" Style="{StaticResource SectionHeader}"/>
+                        <CheckBox Content="Show elapsed time"
+                                  IsChecked="{Binding ShowElapsedTime}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ── ACTION BUTTONS ─────────────────────────────────── -->
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0"
+                            Content="Update Status"
+                            Height="40"
+                            FontSize="14"
+                            Command="{Binding UpdateActivityCommand}"/>
+                    <Button Grid.Column="2"
+                            Content="Clear Status"
+                            Height="40"
+                            FontSize="14"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ClearActivityCommand}"/>
+                </Grid>
+
+                <!-- ── PREVIEW ────────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="PREVIEW" Style="{StaticResource SectionHeader}"/>
+                        <Border Style="{StaticResource PreviewCard}">
+                            <StackPanel>
+                                <TextBlock Text="PLAYING A GAME"
+                                           Foreground="{StaticResource TextMuted}"
+                                           FontSize="10" FontWeight="Bold"
+                                           Margin="0,0,0,8"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0"
+                                            Width="60" Height="60"
+                                            Background="{StaticResource BgHover}"
+                                            CornerRadius="8"
+                                            Margin="0,0,12,0">
+                                        <TextBlock Text="🖼"
+                                                   FontSize="28"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Details}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding State}"
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   FontSize="13"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Foreground="{StaticResource TextSecondary}"
+                                                   FontSize="13">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Setter Property="Text" Value=""/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ShowElapsedTime}" Value="True">
+                                                            <Setter Property="Text" Value="00:00 elapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Buttons preview -->
+                                <Border Visibility="{Binding Button1Label, Converter={StaticResource StringToVis}}"
+                                        Background="{StaticResource BgHover}"
+                                        CornerRadius="4"
+                                        Padding="8,6"
+                                        Margin="0,10,0,4">
+                                    <TextBlock Text="{Binding Button1Label}"
+                                               HorizontalAlignment="Center"
+                                               FontSize="13"/>
+                                </Border>
+                                <Border Visibility="{Binding Button2Label, Converter={StaticResource StringToVis}}"
+                                        Background="{StaticResource BgHover}"
+                                        CornerRadius="4"
+                                        Padding="8,6">
+                                    <TextBlock Text="{Binding Button2Label}"
+                                               HorizontalAlignment="Center"
+                                               FontSize="13"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ══ Status Bar ══════════════════════════════════════════════════ -->
+        <Border Grid.Row="2"
+                Background="{StaticResource BgTertiary}"
+                BorderBrush="{StaticResource Border}"
+                BorderThickness="0,1,0,0">
+            <Grid Margin="12,0">
+                <TextBlock Text="{Binding StatusBarMessage}"
+                           Foreground="{StaticResource TextMuted}"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"/>
+                <TextBlock Text="v1.0.0"
+                           Foreground="{StaticResource TextMuted}"
+                           FontSize="11"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>
