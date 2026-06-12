@@ -3,6 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>DiscordStatusUpdater</RootNamespace>
     <AssemblyName>DiscordStatusUpdater</AssemblyName>
     <Version>1.0.0</Version>
@@ -10,15 +11,32 @@
     <Description>Custom Discord Rich Presence Status Updater</Description>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <Platforms>AnyCPU</Platforms>
+    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <!-- Suppress WinForms global usings so they don't conflict with WPF types.
+       TrayIconService.cs adds them explicitly where needed. -->
+  <ItemGroup>
+    <Using Remove="System.Drawing"/>
+    <Using Remove="System.Windows.Forms"/>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <!-- Icons embedded as WPF resources (pack URI accessible) -->
+  <ItemGroup>
+    <Resource Include="..\..\assets\icon.ico">
+      <Link>Assets/icon.ico</Link>
+    </Resource>
+    <Resource Include="..\..\assets\icon.png">
+      <Link>Assets/icon.png</Link>
+    </Resource>
+  </ItemGroup>
+
+  <!-- Default presets shipped with the app -->
   <ItemGroup>
     <Resource Include="Resources\Presets\default_presets.json" />
   </ItemGroup>

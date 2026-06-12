@@ -39,6 +39,11 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private string _button2Label = string.Empty;
     private string _button2Url = string.Empty;
 
+    // ── App settings ──────────────────────────────────────────────────────────
+    private bool _minimizeToTray = true;
+    private bool _startMinimized;
+    private bool _openWithWindows;
+
     // ── Status bar ───────────────────────────────────────────────────────────
     private string _statusBarMessage = "Ready — enter your Discord Application ID to get started.";
 
@@ -177,6 +182,24 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         private set { _statusBarMessage = value; OnPropertyChanged(); }
     }
 
+    public bool MinimizeToTray
+    {
+        get => _minimizeToTray;
+        set { _minimizeToTray = value; OnPropertyChanged(); QuickSave(s => s.MinimizeToTray = value); }
+    }
+
+    public bool StartMinimized
+    {
+        get => _startMinimized;
+        set { _startMinimized = value; OnPropertyChanged(); QuickSave(s => s.StartMinimized = value); }
+    }
+
+    public bool OpenWithWindows
+    {
+        get => _openWithWindows;
+        set { _openWithWindows = value; OnPropertyChanged(); ApplyOpenWithWindows(value); QuickSave(s => s.OpenWithWindows = value); }
+    }
+
     // ── Commands ─────────────────────────────────────────────────────────────
     public ICommand ConnectCommand { get; }
     public ICommand DisconnectCommand { get; }
@@ -234,6 +257,11 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         var settings = _settingsService.LoadSettings();
         ApplicationId = settings.ApplicationId;
+
+        // Sync tray settings (use registry as source-of-truth for OpenWithWindows)
+        _minimizeToTray = settings.MinimizeToTray;
+        _startMinimized = settings.StartMinimized;
+        _openWithWindows = IsOpenWithWindowsEnabled();
 
         foreach (var preset in _settingsService.LoadPresets())
             Presets.Add(preset);
@@ -450,6 +478,46 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             SetStatus("Error", "#F23F43");
             StatusBarMessage = $"Discord error: {message}";
         });
+    }
+
+    // ── Open-with-Windows (registry) ─────────────────────────────────────────
+    private static void ApplyOpenWithWindows(bool enable)
+    {
+        try
+        {
+            using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+                @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", writable: true);
+            if (key == null) return;
+            if (enable)
+            {
+                var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+                if (!string.IsNullOrEmpty(exe))
+                    key.SetValue("DiscordStatusUpdater", $"\"{exe}\"");
+            }
+            else
+            {
+                key.DeleteValue("DiscordStatusUpdater", throwOnMissingValue: false);
+            }
+        }
+        catch { /* best effort */ }
+    }
+
+    private static bool IsOpenWithWindowsEnabled()
+    {
+        try
+        {
+            using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+                @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
+            return key?.GetValue("DiscordStatusUpdater") != null;
+        }
+        catch { return false; }
+    }
+
+    private void QuickSave(Action<AppSettings> update)
+    {
+        var s = _settingsService.LoadSettings();
+        update(s);
+        _settingsService.SaveSettings(s);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

@@ -462,31 +462,59 @@
         </Setter>
     </Style>
 
-    <!-- ── Section card (replaces GroupBox) ───────────────────────────────── -->
+    <!-- ── Section card ───────────────────────────────────────────────────── -->
     <Style x:Key="SectionCard" TargetType="Border">
         <Setter Property="Background"      Value="{StaticResource BgSecondary}"/>
-        <Setter Property="BorderBrush"     Value="{StaticResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius"    Value="8"/>
+        <Setter Property="CornerRadius"    Value="10"/>
         <Setter Property="Padding"         Value="16,14"/>
         <Setter Property="Margin"          Value="0,0,0,12"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#3D3F45" Offset="0"/>
+                    <GradientStop Color="#1E1F22" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- ── Preview card ───────────────────────────────────────────────────── -->
     <Style x:Key="PreviewCard" TargetType="Border">
-        <Setter Property="Background"      Value="#18191C"/>
-        <Setter Property="BorderBrush"     Value="#111214"/>
+        <Setter Property="Background"      Value="#111214"/>
+        <Setter Property="BorderBrush"     Value="#0D0D0F"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius"    Value="8"/>
-        <Setter Property="Padding"         Value="12"/>
+        <Setter Property="Padding"         Value="0"/>
+        <Setter Property="ClipToBounds"    Value="True"/>
     </Style>
 
     <!-- ── Status indicator dot ───────────────────────────────────────────── -->
     <Style x:Key="StatusDot" TargetType="Ellipse">
-        <Setter Property="Width"  Value="10"/>
-        <Setter Property="Height" Value="10"/>
-        <Setter Property="Margin" Value="0,0,6,0"/>
+        <Setter Property="Width"  Value="9"/>
+        <Setter Property="Height" Value="9"/>
+        <Setter Property="Margin" Value="0,0,7,0"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ── Status badge (pill) ────────────────────────────────────────────── -->
+    <Style x:Key="StatusBadge" TargetType="Border">
+        <Setter Property="CornerRadius"        Value="12"/>
+        <Setter Property="Padding"             Value="10,5"/>
+        <Setter Property="Background"          Value="#1A1B1E"/>
+        <Setter Property="BorderBrush"         Value="#2C2D32"/>
+        <Setter Property="BorderThickness"     Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin"              Value="0,10,0,0"/>
+    </Style>
+
+    <!-- ── Accent bar used before section headers ─────────────────────────── -->
+    <Style x:Key="AccentBar" TargetType="Border">
+        <Setter Property="Width"            Value="3"/>
+        <Setter Property="CornerRadius"     Value="2"/>
+        <Setter Property="Background"       Value="{StaticResource Blurple}"/>
+        <Setter Property="Margin"           Value="0,1,9,1"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
     </Style>
 
 </ResourceDictionary>

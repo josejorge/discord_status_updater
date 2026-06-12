@@ -6,8 +6,9 @@
         xmlns:vm="clr-namespace:DiscordStatusUpdater.ViewModels"
         mc:Ignorable="d"
         Title="Discord Status Updater"
+        Icon="pack://application:,,,/Assets/icon.ico"
         Width="540" MinWidth="480"
-        Height="790" MinHeight="600"
+        Height="820" MinHeight="620"
         WindowStyle="None"
         AllowsTransparency="False"
         Background="{StaticResource Bg}"
@@ -15,7 +16,7 @@
         ResizeMode="CanResizeWithGrip">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="32"
+        <WindowChrome CaptionHeight="34"
                       ResizeBorderThickness="5"
                       UseAeroCaptionButtons="False"
                       GlassFrameThickness="-1"
@@ -28,16 +29,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="34"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="28"/>
+            <RowDefinition Height="26"/>
         </Grid.RowDefinitions>
 
         <!-- ══ Title Bar ══════════════════════════════════════════════════ -->
         <Border Grid.Row="0" Background="{StaticResource BgTertiary}">
             <Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
-                    <Ellipse Width="14" Height="14" Fill="{StaticResource Blurple}" Margin="0,0,8,0"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Image Source="pack://application:,,,/Assets/icon.png"
+                           Width="18" Height="18" Margin="0,0,8,0"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock Text="Discord Status Updater"
                                Foreground="{StaticResource TextSecondary}"
                                FontSize="12" FontWeight="SemiBold"
@@ -62,13 +65,63 @@
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
-                      Padding="16,14,8,14">
+                      Padding="16,12,8,12">
             <StackPanel Margin="0,0,8,0">
+
+                <!-- ── HERO BANNER ────────────────────────────────────── -->
+                <Border CornerRadius="10" Margin="0,0,0,14" ClipToBounds="True">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#5865F2" Offset="0.0"/>
+                            <GradientStop Color="#3C4270" Offset="0.55"/>
+                            <GradientStop Color="#2B2D31" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid Margin="18,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icon in circular container -->
+                        <Border Grid.Column="0" Width="52" Height="52"
+                                CornerRadius="26" Margin="0,0,14,0"
+                                Background="#FFFFFF18">
+                            <Image Source="pack://application:,,,/Assets/icon.png"
+                                   Width="34" Height="34"
+                                   RenderOptions.BitmapScalingMode="HighQuality"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- App name + subtitle -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Discord Status Updater"
+                                       FontSize="16" FontWeight="Bold"
+                                       Foreground="White" Margin="0,0,0,3"/>
+                            <TextBlock Text="Custom Rich Presence Manager"
+                                       FontSize="11" Foreground="#FFFFFFAA"/>
+                        </StackPanel>
+
+                        <!-- Version badge -->
+                        <Border Grid.Column="2" VerticalAlignment="Top"
+                                Background="#FFFFFF22" CornerRadius="8"
+                                Padding="9,4">
+                            <TextBlock Text="v1.0.0" Foreground="White"
+                                       FontSize="10" FontWeight="SemiBold"/>
+                        </Border>
+                    </Grid>
+                </Border>
 
                 <!-- ── CONNECTION ─────────────────────────────────────── -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="CONNECTION" Style="{StaticResource SectionHeader}"/>
+                        <!-- Section header with accent bar -->
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="CONNECTION" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
 
                         <TextBlock Text="APPLICATION ID" Style="{StaticResource LabelText}"/>
                         <Grid Margin="0,0,0,10">
@@ -89,35 +142,40 @@
                                     WindowChrome.IsHitTestVisibleInChrome="True"/>
                         </Grid>
 
-                        <Grid Margin="0,0,0,10">
+                        <Grid Margin="0,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="8"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0"
-                                    Content="Connect"
+                            <Button Grid.Column="0" Content="Connect"
                                     Command="{Binding ConnectCommand}"/>
-                            <Button Grid.Column="2"
-                                    Content="Disconnect"
+                            <Button Grid.Column="2" Content="Disconnect"
                                     Style="{StaticResource SecondaryButton}"
                                     Command="{Binding DisconnectCommand}"/>
                         </Grid>
 
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Style="{StaticResource StatusDot}"
-                                     Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
-                            <TextBlock Text="{Binding ConnectionStatusText}"
-                                       Foreground="{StaticResource TextSecondary}"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <!-- Pill status badge -->
+                        <Border Style="{StaticResource StatusBadge}">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Style="{StaticResource StatusDot}"
+                                         Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
+                                <TextBlock Text="{Binding ConnectionStatusText}"
+                                           Foreground="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Border>
 
                 <!-- ── PRESET ─────────────────────────────────────────── -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="PRESET" Style="{StaticResource SectionHeader}"/>
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="PRESET" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
 
                         <TextBlock Text="LOAD PRESET" Style="{StaticResource LabelText}"/>
                         <ComboBox ItemsSource="{Binding Presets}"
@@ -153,7 +211,10 @@
                 <!-- ── ACTIVITY DETAILS ───────────────────────────────── -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="ACTIVITY DETAILS" Style="{StaticResource SectionHeader}"/>
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="ACTIVITY DETAILS" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
 
                         <TextBlock Text="DETAILS  (first line)" Style="{StaticResource LabelText}"/>
                         <TextBox Text="{Binding Details, UpdateSourceTrigger=PropertyChanged}"
@@ -169,7 +230,10 @@
                 <!-- ── IMAGES ─────────────────────────────────────────── -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="IMAGES" Style="{StaticResource SectionHeader}"/>
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="IMAGES" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
 
                         <TextBlock Text="LARGE IMAGE" Style="{StaticResource LabelText}"/>
                         <Grid Margin="0,0,0,10">
@@ -210,7 +274,10 @@
                 <!-- ── BUTTONS ────────────────────────────────────────── -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="CLICKABLE BUTTONS  (optional)" Style="{StaticResource SectionHeader}"/>
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="CLICKABLE BUTTONS  (optional)" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
 
                         <TextBlock Text="BUTTON 1" Style="{StaticResource LabelText}"/>
                         <Grid Margin="0,0,0,10">
@@ -221,7 +288,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"
                                      Text="{Binding Button1Label, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Label (max 32 chars)"/>
+                                     Tag="Label (max 32)"/>
                             <TextBox Grid.Column="2"
                                      Text="{Binding Button1Url, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="https://..."/>
@@ -236,7 +303,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"
                                      Text="{Binding Button2Label, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Label (max 32 chars)"/>
+                                     Tag="Label (max 32)"/>
                             <TextBox Grid.Column="2"
                                      Text="{Binding Button2Url, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="https://..."/>
@@ -247,100 +314,139 @@
                 <!-- ── OPTIONS ────────────────────────────────────────── -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="OPTIONS" Style="{StaticResource SectionHeader}"/>
-                        <CheckBox Content="Show elapsed time"
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="OPTIONS" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
+                        <CheckBox Content="Show elapsed time (reset on each Update)"
                                   IsChecked="{Binding ShowElapsedTime}"/>
                     </StackPanel>
                 </Border>
 
+                <!-- ── SETTINGS ───────────────────────────────────────── -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="APP SETTINGS" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
+
+                        <CheckBox Content="Minimize to system tray instead of taskbar"
+                                  IsChecked="{Binding MinimizeToTray}"
+                                  Margin="0,0,0,8"/>
+                        <CheckBox Content="Start minimized to system tray"
+                                  IsChecked="{Binding StartMinimized}"
+                                  Margin="0,0,0,8"/>
+                        <CheckBox Content="Open with Windows (launch on startup)"
+                                  IsChecked="{Binding OpenWithWindows}"/>
+                    </StackPanel>
+                </Border>
+
                 <!-- ── ACTION BUTTONS ─────────────────────────────────── -->
-                <Grid Margin="0,0,0,12">
+                <Grid Margin="0,4,0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0"
-                            Content="Update Status"
-                            Height="40"
-                            FontSize="14"
+                            Content="▶  Update Status"
+                            Height="42"
+                            FontSize="14" FontWeight="SemiBold"
                             Command="{Binding UpdateActivityCommand}"/>
                     <Button Grid.Column="2"
-                            Content="Clear Status"
-                            Height="40"
+                            Content="✕  Clear Status"
+                            Height="42"
                             FontSize="14"
                             Style="{StaticResource SecondaryButton}"
                             Command="{Binding ClearActivityCommand}"/>
                 </Grid>
 
                 <!-- ── PREVIEW ────────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
+                <Border Style="{StaticResource SectionCard}" Margin="0,0,0,4">
                     <StackPanel>
-                        <TextBlock Text="PREVIEW" Style="{StaticResource SectionHeader}"/>
+                        <DockPanel Margin="0,0,0,12">
+                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                            <TextBlock Text="PREVIEW" Style="{StaticResource SectionHeader}" Margin="0"/>
+                        </DockPanel>
+
                         <Border Style="{StaticResource PreviewCard}">
                             <StackPanel>
-                                <TextBlock Text="PLAYING A GAME"
-                                           Foreground="{StaticResource TextMuted}"
-                                           FontSize="10" FontWeight="Bold"
-                                           Margin="0,0,0,8"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0"
-                                            Width="60" Height="60"
-                                            Background="{StaticResource BgHover}"
-                                            CornerRadius="8"
-                                            Margin="0,0,12,0">
-                                        <TextBlock Text="🖼"
-                                                   FontSize="28"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                    </Border>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Details}"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="14"
-                                                   TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding State}"
-                                                   Foreground="{StaticResource TextSecondary}"
-                                                   FontSize="13"
-                                                   TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Foreground="{StaticResource TextSecondary}"
-                                                   FontSize="13">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                    <Setter Property="Text" Value=""/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ShowElapsedTime}" Value="True">
-                                                            <Setter Property="Text" Value="00:00 elapsed"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Grid>
+                                <!-- Dark header bar -->
+                                <Border Background="#0D0E10"
+                                        Padding="14,9">
+                                    <TextBlock Text="PLAYING A GAME"
+                                               Foreground="{StaticResource TextMuted}"
+                                               FontSize="10" FontWeight="Bold"/>
+                                </Border>
 
-                                <!-- Buttons preview -->
-                                <Border Visibility="{Binding Button1Label, Converter={StaticResource StringToVis}}"
-                                        Background="{StaticResource BgHover}"
-                                        CornerRadius="4"
-                                        Padding="8,6"
-                                        Margin="0,10,0,4">
-                                    <TextBlock Text="{Binding Button1Label}"
-                                               HorizontalAlignment="Center"
-                                               FontSize="13"/>
-                                </Border>
-                                <Border Visibility="{Binding Button2Label, Converter={StaticResource StringToVis}}"
-                                        Background="{StaticResource BgHover}"
-                                        CornerRadius="4"
-                                        Padding="8,6">
-                                    <TextBlock Text="{Binding Button2Label}"
-                                               HorizontalAlignment="Center"
-                                               FontSize="13"/>
-                                </Border>
+                                <!-- Presence body -->
+                                <StackPanel Margin="14,10,14,12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Image placeholder -->
+                                        <Border Grid.Column="0"
+                                                Width="66" Height="66"
+                                                CornerRadius="10"
+                                                Background="{StaticResource BgHover}"
+                                                Margin="0,0,14,0">
+                                            <TextBlock Text="🖼" FontSize="34"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Details}"
+                                                       FontWeight="SemiBold" FontSize="14"
+                                                       Foreground="#DBDEE1"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,0,2"/>
+                                            <TextBlock Text="{Binding State}"
+                                                       FontSize="13" Foreground="{StaticResource TextSecondary}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,0,2"/>
+                                            <TextBlock FontSize="12" Foreground="{StaticResource TextMuted}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                        <Setter Property="Text" Value=""/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ShowElapsedTime}" Value="True">
+                                                                <Setter Property="Text" Value="00:00 elapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Button previews -->
+                                    <Border Visibility="{Binding Button1Label, Converter={StaticResource StringToVis}}"
+                                            Background="{StaticResource BgHover}"
+                                            BorderBrush="#3A3C42"
+                                            BorderThickness="1"
+                                            CornerRadius="4" Padding="10,7"
+                                            Margin="0,8,0,0">
+                                        <TextBlock Text="{Binding Button1Label}"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="13" FontWeight="SemiBold"/>
+                                    </Border>
+
+                                    <Border Visibility="{Binding Button2Label, Converter={StaticResource StringToVis}}"
+                                            Background="{StaticResource BgHover}"
+                                            BorderBrush="#3A3C42"
+                                            BorderThickness="1"
+                                            CornerRadius="4" Padding="10,7"
+                                            Margin="0,6,0,0">
+                                        <TextBlock Text="{Binding Button2Label}"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="13" FontWeight="SemiBold"/>
+                                    </Border>
+                                </StackPanel>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -352,14 +458,17 @@
         <!-- ══ Status Bar ══════════════════════════════════════════════════ -->
         <Border Grid.Row="2"
                 Background="{StaticResource BgTertiary}"
-                BorderBrush="{StaticResource Border}"
+                BorderBrush="#26282C"
                 BorderThickness="0,1,0,0">
             <Grid Margin="12,0">
-                <TextBlock Text="{Binding StatusBarMessage}"
-                           Foreground="{StaticResource TextMuted}"
-                           FontSize="11"
-                           VerticalAlignment="Center"
-                           TextTrimming="CharacterEllipsis"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="6" Height="6" Margin="0,0,6,0" VerticalAlignment="Center"
+                             Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
+                    <TextBlock Text="{Binding StatusBarMessage}"
+                               Foreground="{StaticResource TextMuted}"
+                               FontSize="11"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
                 <TextBlock Text="v1.0.0"
                            Foreground="{StaticResource TextMuted}"
                            FontSize="11"
