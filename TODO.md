@@ -4,8 +4,6 @@ Items are roughly ordered by priority. Feel free to pick any up!
 
 ## v1.1 — Quality of Life
 
-- [ ] **System tray support** — minimize to tray, show/hide from tray icon, tray context menu (Update / Clear / Exit)
-- [ ] **Auto-start on Windows login** — toggle in settings, writes a registry key or startup folder shortcut
 - [ ] **Import / Export presets** — save/load a `.json` file so users can share preset packs
 - [ ] **Maximize / restore button** in title bar
 - [ ] **Drag-to-resize** visual grip indicator in bottom-right corner
@@ -38,3 +36,8 @@ Items are roughly ordered by priority. Feel free to pick any up!
 - [x] Status bar feedback messages
 - [x] Custom Discord dark theme
 - [x] WindowChrome (resize + snap) with custom title bar
+- [x] System tray support (minimize to tray, tray context menu, balloon tips)
+- [x] Auto-start on Windows login (registry startup key, toggled in settings)
+- [x] Start minimized to tray option
+- [x] App icon (window icon + tray icon)
+- [x] Modernized UI (hero banner, accent bars, pill status badge, gradient card borders)

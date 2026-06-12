@@ -10,16 +10,18 @@ A Windows desktop application that lets you set fully custom Discord Rich Presen
 - **Preset system** — save, load, and delete named presets for quick switching
 - **Elapsed time** — toggle an "00:00 elapsed" timer that resets when you update your status
 - **Live preview** — see a mock Discord presence card as you type
-- **Persistent settings** — your Application ID and last-used preset are remembered across sessions
+- **Persistent settings** — Application ID and last-used preset remembered across sessions
 - **8 built-in presets** — Coding in VS Code, Visual Studio, Gaming, Music, YouTube, Web Dev, Writing Docs, Studying
-- **Discord dark theme UI** — feels right at home next to Discord
+- **System tray** — minimize to tray, double-click icon to restore, tray context menu (Open / Update / Clear / Exit)
+- **Startup options** — start minimized to tray, open with Windows (registry startup key)
+- **Modernized dark UI** — hero banner, blurple accent bars, pill status badge, gradient card borders
 
 ## Requirements
 
 | Requirement | Version |
 |------------|---------|
 | Windows    | 10 or 11 |
-| .NET       | 8.0+ (Runtime) |
+| .NET       | 8.0+ (Runtime) — **not needed** if using the self-contained `.exe` |
 | Discord    | Desktop app, running and logged in |
 
 ## Quick Start
