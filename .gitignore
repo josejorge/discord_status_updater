@@ -36,6 +36,13 @@ logs/
 ## User-specific app data (not the default presets)
 AppData/
 
+## Secrets / local config — never commit these
+.env
+.env.*
+*.secret
+local.settings.json
+secrets.json
+
 ## NuGet
 packages/
 *.nupkg
