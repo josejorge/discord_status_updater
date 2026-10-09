@@ -1,14 +1,16 @@
+<!-- File: MainWindow.xaml | Description: Main window: sidebar navigation with Dashboard, Auto-Detect, Presets and Settings pages | Author: Jose-Jorge HERNANDEZ | Company: Parlee Conseiller, Inc. | Date: 2026-06-01 | Last edit date: 2026-10-09 | Version: 2.0.0 -->
 <Window x:Class="DiscordStatusUpdater.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:DiscordStatusUpdater.ViewModels"
+        xmlns:ctl="clr-namespace:DiscordStatusUpdater.Controls"
         mc:Ignorable="d"
         Title="Discord Status Updater"
         Icon="pack://application:,,,/Assets/icon.ico"
-        Width="540" MinWidth="480"
-        Height="820" MinHeight="620"
+        Width="1020" MinWidth="880"
+        Height="720" MinHeight="600"
         WindowStyle="None"
         AllowsTransparency="False"
         Background="{StaticResource Bg}"
@@ -27,6 +29,15 @@
         <vm:MainViewModel/>
     </Window.DataContext>
 
+    <Window.Resources>
+        <!-- Pages are all in the visual tree and shown/hidden by the sidebar selection. -->
+        <Style x:Key="Page" TargetType="ScrollViewer">
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="Padding" Value="0,0,12,0"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="34"/>
@@ -34,448 +45,561 @@
             <RowDefinition Height="26"/>
         </Grid.RowDefinitions>
 
-        <!-- ══ Title Bar ══════════════════════════════════════════════════ -->
+        <!-- ══ Title bar ═════════════════════════════════════════════════════ -->
         <Border Grid.Row="0" Background="{StaticResource BgTertiary}">
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                    <Image Source="pack://application:,,,/Assets/icon.png"
-                           Width="18" Height="18" Margin="0,0,8,0"
+                    <Image Source="pack://application:,,,/Assets/icon.png" Width="18" Height="18" Margin="0,0,8,0"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
-                    <TextBlock Text="Discord Status Updater"
-                               Foreground="{StaticResource TextSecondary}"
-                               FontSize="12" FontWeight="SemiBold"
-                               VerticalAlignment="Center"/>
+                    <TextBlock Text="Discord Status Updater" Foreground="{StaticResource TextSecondary}"
+                               FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="─"
-                            Style="{StaticResource TitleBarButton}"
-                            Click="MinimizeButton_Click"
-                            WindowChrome.IsHitTestVisibleInChrome="True"
-                            ToolTip="Minimize"/>
-                    <Button Content="✕"
-                            Style="{StaticResource TitleBarCloseButton}"
-                            Click="CloseButton_Click"
-                            WindowChrome.IsHitTestVisibleInChrome="True"
-                            ToolTip="Close"/>
+                    <Button Content="─" Style="{StaticResource TitleBarButton}" Click="MinimizeButton_Click"
+                            WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"/>
+                    <Button Content="✕" Style="{StaticResource TitleBarCloseButton}" Click="CloseButton_Click"
+                            WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- ══ Main Content ═══════════════════════════════════════════════ -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Padding="16,12,8,12">
-            <StackPanel Margin="0,0,8,0">
+        <!-- ══ Body: sidebar + pages ═════════════════════════════════════════ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="210"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- ── HERO BANNER ────────────────────────────────────── -->
-                <Border CornerRadius="10" Margin="0,0,0,14" ClipToBounds="True">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#5865F2" Offset="0.0"/>
-                            <GradientStop Color="#3C4270" Offset="0.55"/>
-                            <GradientStop Color="#2B2D31" Offset="1.0"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid Margin="18,14">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Icon in circular container -->
-                        <Border Grid.Column="0" Width="52" Height="52"
-                                CornerRadius="26" Margin="0,0,14,0"
-                                Background="#FFFFFF18">
-                            <Image Source="pack://application:,,,/Assets/icon.png"
-                                   Width="34" Height="34"
-                                   RenderOptions.BitmapScalingMode="HighQuality"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+            <!-- ── Sidebar ─────────────────────────────────────────────── -->
+            <Border Grid.Column="0" Background="{StaticResource BgSecondary}">
+                <DockPanel Margin="14,16,14,14">
+                    <!-- Brand -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4,0,0,22">
+                        <Border Width="38" Height="38" CornerRadius="19" Margin="0,0,10,0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#5865F2" Offset="0"/>
+                                    <GradientStop Color="#3C4270" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Image Source="pack://application:,,,/Assets/icon.png" Width="24" Height="24"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Border>
-
-                        <!-- App name + subtitle -->
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="Discord Status Updater"
-                                       FontSize="16" FontWeight="Bold"
-                                       Foreground="White" Margin="0,0,0,3"/>
-                            <TextBlock Text="Custom Rich Presence Manager"
-                                       FontSize="11" Foreground="#FFFFFFAA"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Status Updater" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                            <TextBlock Text="{x:Static vm:MainViewModel.VersionText}" FontSize="11"
+                                       Foreground="{StaticResource TextMuted}"/>
                         </StackPanel>
-
-                        <!-- Version badge -->
-                        <Border Grid.Column="2" VerticalAlignment="Top"
-                                Background="#FFFFFF22" CornerRadius="8"
-                                Padding="9,4">
-                            <TextBlock Text="v1.0.0" Foreground="White"
-                                       FontSize="10" FontWeight="SemiBold"/>
-                        </Border>
-                    </Grid>
-                </Border>
-
-                <!-- ── CONNECTION ─────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <!-- Section header with accent bar -->
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="CONNECTION" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <TextBlock Text="APPLICATION ID" Style="{StaticResource LabelText}"/>
-                        <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding ApplicationId, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="e.g. 1234567890123456789"
-                                     IsEnabled="{Binding CanEditApplicationId}"/>
-                            <Button Grid.Column="2"
-                                    Content="Dev Portal"
-                                    Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding OpenDevPortalCommand}"
-                                    ToolTip="Open Discord Developer Portal"
-                                    WindowChrome.IsHitTestVisibleInChrome="True"/>
-                        </Grid>
-
-                        <Grid Margin="0,0,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="Connect"
-                                    Command="{Binding ConnectCommand}"/>
-                            <Button Grid.Column="2" Content="Disconnect"
-                                    Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding DisconnectCommand}"/>
-                        </Grid>
-
-                        <!-- Pill status badge -->
-                        <Border Style="{StaticResource StatusBadge}">
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse Style="{StaticResource StatusDot}"
-                                         Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
-                                <TextBlock Text="{Binding ConnectionStatusText}"
-                                           Foreground="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"
-                                           FontSize="12" FontWeight="SemiBold"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
                     </StackPanel>
-                </Border>
 
-                <!-- ── PRESET ─────────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="PRESET" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <TextBlock Text="LOAD PRESET" Style="{StaticResource LabelText}"/>
-                        <ComboBox ItemsSource="{Binding Presets}"
-                                  SelectedItem="{Binding SelectedPreset}"
-                                  DisplayMemberPath="Name"
-                                  Margin="0,0,0,10"/>
-
-                        <TextBlock Text="PRESET NAME" Style="{StaticResource LabelText}"/>
-                        <TextBox Text="{Binding CurrentPresetName, UpdateSourceTrigger=PropertyChanged}"
-                                 Tag="Enter a name for this preset"
-                                 Margin="0,0,0,10"/>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="New"
-                                    Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding NewPresetCommand}"/>
-                            <Button Grid.Column="2" Content="Save"
-                                    Command="{Binding SavePresetCommand}"/>
-                            <Button Grid.Column="4" Content="Delete"
-                                    Style="{StaticResource DangerButton}"
-                                    Command="{Binding DeletePresetCommand}"/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- ── ACTIVITY DETAILS ───────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="ACTIVITY DETAILS" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <TextBlock Text="DETAILS  (first line)" Style="{StaticResource LabelText}"/>
-                        <TextBox Text="{Binding Details, UpdateSourceTrigger=PropertyChanged}"
-                                 Tag="e.g. Editing main.cs"
-                                 Margin="0,0,0,10"/>
-
-                        <TextBlock Text="STATE  (second line)" Style="{StaticResource LabelText}"/>
-                        <TextBox Text="{Binding State, UpdateSourceTrigger=PropertyChanged}"
-                                 Tag="e.g. In workspace"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- ── IMAGES ─────────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="IMAGES" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <TextBlock Text="LARGE IMAGE" Style="{StaticResource LabelText}"/>
-                        <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding LargeImageKey, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Asset key name"/>
-                            <TextBox Grid.Column="2"
-                                     Text="{Binding LargeImageText, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Hover tooltip"/>
-                        </Grid>
-
-                        <TextBlock Text="SMALL IMAGE" Style="{StaticResource LabelText}"/>
-                        <Grid Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding SmallImageKey, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Asset key name"/>
-                            <TextBox Grid.Column="2"
-                                     Text="{Binding SmallImageText, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Hover tooltip"/>
-                        </Grid>
-
-                        <TextBlock Text="Image keys must match asset names uploaded in the Discord Developer Portal."
-                                   Style="{StaticResource HintText}"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- ── BUTTONS ────────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="CLICKABLE BUTTONS  (optional)" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <TextBlock Text="BUTTON 1" Style="{StaticResource LabelText}"/>
-                        <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding Button1Label, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Label (max 32)"/>
-                            <TextBox Grid.Column="2"
-                                     Text="{Binding Button1Url, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="https://..."/>
-                        </Grid>
-
-                        <TextBlock Text="BUTTON 2" Style="{StaticResource LabelText}"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding Button2Label, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Label (max 32)"/>
-                            <TextBox Grid.Column="2"
-                                     Text="{Binding Button2Url, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="https://..."/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- ── OPTIONS ────────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="OPTIONS" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-                        <CheckBox Content="Show elapsed time (reset on each Update)"
-                                  IsChecked="{Binding ShowElapsedTime}"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- ── SETTINGS ───────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="APP SETTINGS" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <CheckBox Content="Minimize to system tray instead of taskbar"
-                                  IsChecked="{Binding MinimizeToTray}"
-                                  Margin="0,0,0,8"/>
-                        <CheckBox Content="Start minimized to system tray"
-                                  IsChecked="{Binding StartMinimized}"
-                                  Margin="0,0,0,8"/>
-                        <CheckBox Content="Open with Windows (launch on startup)"
-                                  IsChecked="{Binding OpenWithWindows}"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- ── ACTION BUTTONS ─────────────────────────────────── -->
-                <Grid Margin="0,4,0,14">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0"
-                            Content="▶  Update Status"
-                            Height="42"
-                            FontSize="14" FontWeight="SemiBold"
-                            Command="{Binding UpdateActivityCommand}"/>
-                    <Button Grid.Column="2"
-                            Content="✕  Clear Status"
-                            Height="42"
-                            FontSize="14"
-                            Style="{StaticResource SecondaryButton}"
-                            Command="{Binding ClearActivityCommand}"/>
-                </Grid>
-
-                <!-- ── PREVIEW ────────────────────────────────────────── -->
-                <Border Style="{StaticResource SectionCard}" Margin="0,0,0,4">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,12">
-                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
-                            <TextBlock Text="PREVIEW" Style="{StaticResource SectionHeader}" Margin="0"/>
-                        </DockPanel>
-
-                        <Border Style="{StaticResource PreviewCard}">
+                    <!-- Bottom: auto-detect master switch + connection pill -->
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <Border Background="{StaticResource BgTertiary}" CornerRadius="8" Padding="12,10">
                             <StackPanel>
-                                <!-- Dark header bar -->
-                                <Border Background="#0D0E10"
-                                        Padding="14,9">
-                                    <TextBlock Text="PLAYING A GAME"
-                                               Foreground="{StaticResource TextMuted}"
-                                               FontSize="10" FontWeight="Bold"/>
-                                </Border>
-
-                                <!-- Presence body -->
-                                <StackPanel Margin="14,10,14,12">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Image placeholder -->
-                                        <Border Grid.Column="0"
-                                                Width="66" Height="66"
-                                                CornerRadius="10"
-                                                Background="{StaticResource BgHover}"
-                                                Margin="0,0,14,0">
-                                            <TextBlock Text="🖼" FontSize="34"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
-                                        </Border>
-
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Details}"
-                                                       FontWeight="SemiBold" FontSize="14"
-                                                       Foreground="#DBDEE1"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       Margin="0,0,0,2"/>
-                                            <TextBlock Text="{Binding State}"
-                                                       FontSize="13" Foreground="{StaticResource TextSecondary}"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       Margin="0,0,0,2"/>
-                                            <TextBlock FontSize="12" Foreground="{StaticResource TextMuted}">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                        <Setter Property="Text" Value=""/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ShowElapsedTime}" Value="True">
-                                                                <Setter Property="Text" Value="00:00 elapsed"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <!-- Button previews -->
-                                    <Border Visibility="{Binding Button1Label, Converter={StaticResource StringToVis}}"
-                                            Background="{StaticResource BgHover}"
-                                            BorderBrush="#3A3C42"
-                                            BorderThickness="1"
-                                            CornerRadius="4" Padding="10,7"
-                                            Margin="0,8,0,0">
-                                        <TextBlock Text="{Binding Button1Label}"
-                                                   HorizontalAlignment="Center"
-                                                   FontSize="13" FontWeight="SemiBold"/>
-                                    </Border>
-
-                                    <Border Visibility="{Binding Button2Label, Converter={StaticResource StringToVis}}"
-                                            Background="{StaticResource BgHover}"
-                                            BorderBrush="#3A3C42"
-                                            BorderThickness="1"
-                                            CornerRadius="4" Padding="10,7"
-                                            Margin="0,6,0,0">
-                                        <TextBlock Text="{Binding Button2Label}"
-                                                   HorizontalAlignment="Center"
-                                                   FontSize="13" FontWeight="SemiBold"/>
-                                    </Border>
+                                <CheckBox Style="{StaticResource ToggleSwitch}"
+                                          IsChecked="{Binding AutoDetectEnabled}"
+                                          Content="Auto-detect"
+                                          FontWeight="SemiBold"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Ellipse Style="{StaticResource StatusDot}"
+                                             Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
+                                    <TextBlock Text="{Binding ConnectionStatusText}" FontSize="12"
+                                               Foreground="{StaticResource TextSecondary}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
                     </StackPanel>
-                </Border>
 
-            </StackPanel>
-        </ScrollViewer>
+                    <!-- Navigation: the RadioButtons write their ConverterParameter into CurrentPage -->
+                    <StackPanel>
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="⌂   Dashboard"
+                                     IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=Dashboard}"/>
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="◉   Auto-Detect"
+                                     IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=AutoDetect}"/>
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="✎   Presets"
+                                     IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=Presets}"/>
+                        <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="⚙   Settings"
+                                     IsChecked="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=Settings}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
 
-        <!-- ══ Status Bar ══════════════════════════════════════════════════ -->
-        <Border Grid.Row="2"
-                Background="{StaticResource BgTertiary}"
-                BorderBrush="#26282C"
-                BorderThickness="0,1,0,0">
+            <!-- ── Pages ───────────────────────────────────────────────── -->
+            <Grid Grid.Column="1" Margin="24,20,12,12">
+
+                <!-- ════════ DASHBOARD ════════ -->
+                <ScrollViewer Style="{StaticResource Page}"
+                              Visibility="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=Dashboard}">
+                    <StackPanel>
+                        <TextBlock Text="Dashboard" Style="{StaticResource PageTitle}"/>
+                        <TextBlock Style="{StaticResource PageSubtitle}"
+                                   Text="Your Discord status follows the apps you are using. Turn on auto-detect and just work."/>
+
+                        <!-- Live status -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="320"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <DockPanel Margin="0,0,0,12">
+                                        <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                        <TextBlock Text="NOW DETECTED" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                    </DockPanel>
+                                    <TextBlock Text="{Binding AutoDetectStatusText}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="{Binding LiveSource}" Foreground="{StaticResource TextMuted}"
+                                               FontSize="12" TextWrapping="Wrap" Margin="0,4,0,14"/>
+
+                                    <TextBlock Text="TRACKED APPS RUNNING" Style="{StaticResource LabelText}"/>
+                                    <ItemsControl ItemsSource="{Binding Matches}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="6" Padding="10,7" Margin="0,0,0,4">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{StaticResource BgTertiary}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsWinner}" Value="True">
+                                                                    <Setter Property="Background" Value="#3C4270"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <DockPanel>
+                                                        <TextBlock DockPanel.Dock="Right" Text="● showing" FontSize="11"
+                                                                   Foreground="{StaticResource Success}" VerticalAlignment="Center"
+                                                                   Visibility="{Binding IsWinner, Converter={StaticResource BoolToVis}}"/>
+                                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Margin="0,0,10,0"/>
+                                                        <TextBlock Text="{Binding Title}" Foreground="{StaticResource TextMuted}"
+                                                                   TextTrimming="CharacterEllipsis" FontSize="12" VerticalAlignment="Center"/>
+                                                    </DockPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Style="{StaticResource HintText}" Margin="0,2,0,0"
+                                               Text="Apps from your enabled rules appear here while they run."/>
+                                </StackPanel>
+
+                                <ctl:PresenceCard Grid.Column="2" VerticalAlignment="Top"
+                                                  AppName="{Binding LiveAppName}"
+                                                  Details="{Binding LiveDetails}"
+                                                  State="{Binding LiveState}"
+                                                  Elapsed="{Binding LiveElapsed}"
+                                                  Initials="{Binding LiveInitials}"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Connection -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,12">
+                                    <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                    <TextBlock Text="DISCORD CONNECTION" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                </DockPanel>
+
+                                <TextBlock Text="DEFAULT APPLICATION ID" Style="{StaticResource LabelText}"/>
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding ApplicationId, UpdateSourceTrigger=PropertyChanged}"
+                                             Tag="e.g. 1234567890123456789"
+                                             IsEnabled="{Binding CanEditApplicationId}"/>
+                                    <Button Grid.Column="2" Content="Dev Portal" Style="{StaticResource SecondaryButton}"
+                                            Command="{Binding OpenDevPortalCommand}" ToolTip="Open Discord Developer Portal"/>
+                                </Grid>
+                                <TextBlock Style="{StaticResource HintText}" TextWrapping="Wrap" Margin="0,0,0,12"
+                                           Text="Used by every rule that has no Application ID of its own. Auto-detect connects by itself when an app is found."/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="Connect" Command="{Binding ConnectCommand}"/>
+                                    <Button Grid.Column="2" Content="Disconnect" Style="{StaticResource SecondaryButton}"
+                                            Command="{Binding DisconnectCommand}"/>
+                                    <Button Grid.Column="4" Content="▶  Send current preset" Style="{StaticResource SecondaryButton}"
+                                            Command="{Binding UpdateActivityCommand}"
+                                            ToolTip="Manually send the preset open on the Presets page"/>
+                                    <Button Grid.Column="6" Content="✕  Clear status" Style="{StaticResource SecondaryButton}"
+                                            Command="{Binding ClearActivityCommand}"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ════════ AUTO-DETECT ════════ -->
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=AutoDetect}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Auto-Detect" Style="{StaticResource PageTitle}"/>
+                        <TextBlock Style="{StaticResource PageSubtitle}"
+                                   Text="Rules are checked top to bottom. The app you are focused on wins; otherwise the highest rule does."/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="290"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Rule list -->
+                        <Border Grid.Column="0" Style="{StaticResource SectionCard}" Margin="0,0,0,12">
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                                    <TextBlock Text="ADD FROM A RUNNING APP" Style="{StaticResource LabelText}"/>
+                                    <ComboBox ItemsSource="{Binding RunningApps}" SelectedItem="{Binding SelectedRunningApp}"
+                                              DisplayMemberPath="Display" Margin="0,0,0,6"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="6"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Content="Add rule" Command="{Binding AddRuleFromAppCommand}"/>
+                                        <Button Grid.Column="2" Content="↻" Width="36" Style="{StaticResource SecondaryButton}"
+                                                Padding="0" Command="{Binding RefreshRunningAppsCommand}" ToolTip="Refresh the list"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                    <Button DockPanel.Dock="Right" Content="+ New" Height="28" Padding="10,0" FontSize="12"
+                                            Command="{Binding NewRuleCommand}"/>
+                                    <DockPanel>
+                                        <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                        <TextBlock Text="RULES" Style="{StaticResource SectionHeader}" Margin="0" VerticalAlignment="Center"/>
+                                    </DockPanel>
+                                </DockPanel>
+
+                                <ListBox Style="{StaticResource CardList}" ItemsSource="{Binding Rules}"
+                                         SelectedItem="{Binding SelectedRule}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel>
+                                                <CheckBox DockPanel.Dock="Right" Style="{StaticResource ToggleSwitch}"
+                                                          IsChecked="{Binding Enabled}" VerticalAlignment="Center"
+                                                          ToolTip="Enable or disable this rule"/>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding ProcessNames}" FontSize="11"
+                                                               Foreground="{StaticResource TextMuted}"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
+                        </Border>
+
+                        <!-- Rule editor -->
+                        <ScrollViewer Grid.Column="2" Style="{StaticResource Page}">
+                            <StackPanel>
+                                <Border Style="{StaticResource SectionCard}"
+                                        Visibility="{Binding HasSelectedRule, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel DataContext="{Binding SelectedRule}">
+                                        <DockPanel Margin="0,0,0,12">
+                                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                            <TextBlock Text="RULE" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                        </DockPanel>
+
+                                        <TextBlock Text="NAME  (also available as {app})" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="e.g. Visual Studio Code" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="PROCESS NAMES  (comma separated, without .exe)" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding ProcessNames, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="e.g. Code, Code - Insiders" Margin="0,0,0,4"/>
+                                        <TextBlock Style="{StaticResource HintText}" Margin="0,0,0,10" TextWrapping="Wrap"
+                                                   Text="Tip: use “Add from a running app” on the left to fill this in for you."/>
+
+                                        <TextBlock Text="PRESET  (what to show)" Style="{StaticResource LabelText}"/>
+                                        <ComboBox ItemsSource="{Binding DataContext.Presets, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                  DisplayMemberPath="Name" SelectedValuePath="Name"
+                                                  SelectedValue="{Binding PresetName}" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="ONLY WHEN THE WINDOW TITLE MATCHES  (optional regex)" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding TitleRegex, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="e.g. \.(html|css)\b   — leave empty to match any title" Margin="0,0,0,4"/>
+                                        <TextBlock Foreground="{StaticResource Danger}" FontSize="11" Margin="0,0,0,10"
+                                                   Text="That pattern is not a valid regular expression, so it is ignored."
+                                                   Visibility="{Binding DataContext.RegexValid, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBoolToVis}}"/>
+
+                                        <TextBlock Text="OWN DISCORD APPLICATION ID  (optional)" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding ApplicationId, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="Leave empty to use the default ID" Margin="0,0,0,4"/>
+                                        <TextBlock Style="{StaticResource HintText}" TextWrapping="Wrap"
+                                                   Text="Discord shows “Playing &lt;application name&gt;”. Create a Discord application named exactly like the tool (e.g. “Visual Studio Code”) and paste its ID here to get that name on your profile."/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Grid Margin="0,0,0,12" Visibility="{Binding HasSelectedRule, Converter={StaticResource BoolToVis}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="▲  Move up" Style="{StaticResource SecondaryButton}" Command="{Binding MoveRuleUpCommand}"/>
+                                    <Button Grid.Column="2" Content="▼  Move down" Style="{StaticResource SecondaryButton}" Command="{Binding MoveRuleDownCommand}"/>
+                                    <Button Grid.Column="4" Content="Delete rule" Style="{StaticResource DangerButton}" Command="{Binding DeleteRuleCommand}"/>
+                                </Grid>
+
+                                <TextBlock Text="Select a rule on the left, or add one from a running app."
+                                           Style="{StaticResource HintText}" Margin="4,8,0,0"
+                                           Visibility="{Binding HasSelectedRule, Converter={StaticResource InverseBoolToVis}}"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+
+                <!-- ════════ PRESETS ════════ -->
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=Presets}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Presets" Style="{StaticResource PageTitle}"/>
+                        <TextBlock Style="{StaticResource PageSubtitle}"
+                                   Text="A preset is what your status says. Rules point at presets; you can also send one by hand."/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="230"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Style="{StaticResource SectionCard}" Margin="0,0,0,12">
+                            <DockPanel>
+                                <Grid DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="6"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="New" Style="{StaticResource SecondaryButton}" Command="{Binding NewPresetCommand}"/>
+                                    <Button Grid.Column="2" Content="Delete" Style="{StaticResource DangerButton}" Command="{Binding DeletePresetCommand}"/>
+                                </Grid>
+                                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                    <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                    <TextBlock Text="YOUR PRESETS" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                </DockPanel>
+                                <ListBox Style="{StaticResource CardList}" ItemsSource="{Binding Presets}"
+                                         SelectedItem="{Binding SelectedPreset}" DisplayMemberPath="Name"/>
+                            </DockPanel>
+                        </Border>
+
+                        <ScrollViewer Grid.Column="2" Style="{StaticResource Page}">
+                            <StackPanel>
+                                <!-- Live preview with sample values for the tokens -->
+                                <ctl:PresenceCard AppName="Your application" Margin="0,0,0,12"
+                                                  Details="{Binding PreviewDetails}" State="{Binding PreviewState}"
+                                                  Initials="Ab" Elapsed="00:42 elapsed"
+                                                  Button1="{Binding Button1Label}" Button2="{Binding Button2Label}"/>
+
+                                <Border Style="{StaticResource SectionCard}">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,12">
+                                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                            <TextBlock Text="TEXT" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                        </DockPanel>
+
+                                        <TextBlock Text="PRESET NAME" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding CurrentPresetName, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="Enter a name for this preset" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="DETAILS  (first line)" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding Details, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="e.g. [Editing {file}]" Margin="0,0,0,10"/>
+
+                                        <TextBlock Text="STATE  (second line)" Style="{StaticResource LabelText}"/>
+                                        <TextBox Text="{Binding State, UpdateSourceTrigger=PropertyChanged}"
+                                                 Tag="e.g. [in {workspace}]" Margin="0,0,0,8"/>
+
+                                        <TextBlock Style="{StaticResource HintText}" TextWrapping="Wrap"
+                                                   Text="Placeholders: {app} {process} {title} {file} {workspace}. Text in [square brackets] is dropped when a placeholder inside it is empty. The preview above uses sample values."/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource SectionCard}">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,12">
+                                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                            <TextBlock Text="IMAGES" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                        </DockPanel>
+
+                                        <TextBlock Text="LARGE IMAGE" Style="{StaticResource LabelText}"/>
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Text="{Binding LargeImageKey, UpdateSourceTrigger=PropertyChanged}" Tag="Asset key name"/>
+                                            <TextBox Grid.Column="2" Text="{Binding LargeImageText, UpdateSourceTrigger=PropertyChanged}" Tag="Hover tooltip"/>
+                                        </Grid>
+
+                                        <TextBlock Text="SMALL IMAGE" Style="{StaticResource LabelText}"/>
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Text="{Binding SmallImageKey, UpdateSourceTrigger=PropertyChanged}" Tag="Asset key name"/>
+                                            <TextBox Grid.Column="2" Text="{Binding SmallImageText, UpdateSourceTrigger=PropertyChanged}" Tag="Hover tooltip"/>
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource HintText}" TextWrapping="Wrap"
+                                                   Text="Image keys must match asset names uploaded to the Discord application in the Developer Portal."/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource SectionCard}">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,12">
+                                            <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                            <TextBlock Text="BUTTONS  (optional)" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                        </DockPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Text="{Binding Button1Label, UpdateSourceTrigger=PropertyChanged}" Tag="Label (max 32)"/>
+                                            <TextBox Grid.Column="2" Text="{Binding Button1Url, UpdateSourceTrigger=PropertyChanged}" Tag="https://..."/>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Text="{Binding Button2Label, UpdateSourceTrigger=PropertyChanged}" Tag="Label (max 32)"/>
+                                            <TextBox Grid.Column="2" Text="{Binding Button2Url, UpdateSourceTrigger=PropertyChanged}" Tag="https://..."/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <CheckBox Content="Show elapsed time (for detected apps: how long the app has been open)"
+                                          IsChecked="{Binding ShowElapsedTime}" Margin="4,0,0,14"/>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="💾  Save preset" Height="40" Command="{Binding SavePresetCommand}"/>
+                                    <Button Grid.Column="2" Content="▶  Send to Discord now" Height="40"
+                                            Style="{StaticResource SecondaryButton}" Command="{Binding UpdateActivityCommand}"/>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+
+                <!-- ════════ SETTINGS ════════ -->
+                <ScrollViewer Style="{StaticResource Page}"
+                              Visibility="{Binding CurrentPage, Converter={StaticResource Equals}, ConverterParameter=Settings}">
+                    <StackPanel MaxWidth="640" HorizontalAlignment="Left">
+                        <TextBlock Text="Settings" Style="{StaticResource PageTitle}"/>
+                        <TextBlock Style="{StaticResource PageSubtitle}" Text="How the app behaves and what it is allowed to share."/>
+
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,12">
+                                    <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                    <TextBlock Text="AUTO-DETECT" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                </DockPanel>
+
+                                <CheckBox Style="{StaticResource ToggleSwitch}" Margin="0,0,0,12"
+                                          Content="Prefer the app I am working in (focus beats rule order)"
+                                          IsChecked="{Binding PreferFocusedApp}"/>
+                                <CheckBox Style="{StaticResource ToggleSwitch}" Margin="0,0,0,12"
+                                          Content="Clear my status when no tracked app is running"
+                                          IsChecked="{Binding ClearWhenIdle}"/>
+                                <CheckBox Style="{StaticResource ToggleSwitch}" Margin="0,0,0,4"
+                                          Content="Show file and project names from window titles"
+                                          IsChecked="{Binding ShareWindowTitles}"/>
+                                <TextBlock Style="{StaticResource HintText}" TextWrapping="Wrap" Margin="50,0,0,14"
+                                           Text="Turn this off if you don't want file or project names on your public profile; only the app name is shown."/>
+
+                                <TextBlock Text="CHECK FOR RUNNING APPS EVERY (seconds, 1–30)" Style="{StaticResource LabelText}"/>
+                                <TextBox Width="80" HorizontalAlignment="Left"
+                                         Text="{Binding PollIntervalSeconds, UpdateSourceTrigger=LostFocus}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,12">
+                                    <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                    <TextBlock Text="WINDOW &amp; STARTUP" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                </DockPanel>
+                                <CheckBox Style="{StaticResource ToggleSwitch}" Margin="0,0,0,12"
+                                          Content="Minimize to the system tray instead of the taskbar"
+                                          IsChecked="{Binding MinimizeToTray}"/>
+                                <CheckBox Style="{StaticResource ToggleSwitch}" Margin="0,0,0,12"
+                                          Content="Start minimized to the system tray"
+                                          IsChecked="{Binding StartMinimized}"/>
+                                <CheckBox Style="{StaticResource ToggleSwitch}"
+                                          Content="Open with Windows (launch on startup)"
+                                          IsChecked="{Binding OpenWithWindows}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,12">
+                                    <Border DockPanel.Dock="Left" Style="{StaticResource AccentBar}"/>
+                                    <TextBlock Text="ABOUT" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                </DockPanel>
+                                <TextBlock Foreground="{StaticResource TextSecondary}" TextWrapping="Wrap"
+                                           Text="Discord Status Updater by Jose-Jorge HERNANDEZ — Parlee Conseiller, Inc."/>
+                                <TextBlock Foreground="{StaticResource TextMuted}" Margin="0,4,0,0"
+                                           Text="{x:Static vm:MainViewModel.VersionText}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- ══ Status bar ════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2" Background="{StaticResource BgTertiary}" BorderBrush="#26282C" BorderThickness="0,1,0,0">
             <Grid Margin="12,0">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Ellipse Width="6" Height="6" Margin="0,0,6,0" VerticalAlignment="Center"
                              Fill="{Binding ConnectionStatusColor, Converter={StaticResource ColorToBrush}}"/>
-                    <TextBlock Text="{Binding StatusBarMessage}"
-                               Foreground="{StaticResource TextMuted}"
-                               FontSize="11"
-                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding StatusBarMessage}" Foreground="{StaticResource TextMuted}"
+                               FontSize="11" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
-                <TextBlock Text="v1.0.0"
-                           Foreground="{StaticResource TextMuted}"
-                           FontSize="11"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Center"/>
+                <TextBlock Text="{x:Static vm:MainViewModel.VersionText}" Foreground="{StaticResource TextMuted}"
+                           FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </Grid>
         </Border>
-
     </Grid>
 </Window>

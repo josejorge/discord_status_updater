@@ -1,3 +1,4 @@
+<!-- File: DarkTheme.xaml | Description: Discord-style dark theme: palette tokens and control styles | Author: Jose-Jorge HERNANDEZ | Company: Parlee Conseiller, Inc. | Date: 2026-06-01 | Last edit date: 2026-10-09 | Version: 2.0.0 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv="clr-namespace:DiscordStatusUpdater.Converters">
@@ -7,6 +8,8 @@
     <conv:InverseBoolConverter           x:Key="InverseBool"/>
     <conv:StringToVisibilityConverter    x:Key="StringToVis"/>
     <BooleanToVisibilityConverter        x:Key="BoolToVis"/>
+    <conv:EqualsConverter                x:Key="Equals"/>
+    <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
 
     <!-- ── Color palette ──────────────────────────────────────────────────── -->
     <SolidColorBrush x:Key="Bg"            Color="#313338"/>
@@ -515,6 +518,124 @@
         <Setter Property="Background"       Value="{StaticResource Blurple}"/>
         <Setter Property="Margin"           Value="0,1,9,1"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
+    </Style>
+
+    <!-- ── Page heading ───────────────────────────────────────────────────── -->
+    <Style x:Key="PageTitle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontSize"   Value="22"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="PageSubtitle" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontSize"     Value="12"/>
+        <Setter Property="Foreground"   Value="{StaticResource TextMuted}"/>
+        <Setter Property="Margin"       Value="0,2,0,16"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- ── Sidebar navigation button (RadioButton) ────────────────────────── -->
+    <Style x:Key="NavButton" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize"   Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor"     Value="Hand"/>
+        <Setter Property="Margin"     Value="0,0,0,4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="bg" CornerRadius="6" Padding="14,9" Background="Transparent">
+                        <Grid>
+                            <Border x:Name="bar" Width="3" Height="16" CornerRadius="2"
+                                    HorizontalAlignment="Left" Margin="-10,0,0,0"
+                                    Background="{StaticResource Blurple}" Visibility="Collapsed"/>
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bg" Property="Background" Value="{StaticResource BgHover}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="bg"  Property="Background" Value="#3F4147"/>
+                            <Setter TargetName="bar" Property="Visibility" Value="Visible"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Toggle switch (CheckBox) ───────────────────────────────────────── -->
+    <Style x:Key="ToggleSwitch" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource TextNormal}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize"   Value="13"/>
+        <Setter Property="Cursor"     Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="track" Width="40" Height="22" CornerRadius="11"
+                                Background="#4E5058">
+                            <Ellipse x:Name="knob" Width="16" Height="16" Fill="White"
+                                     HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                        </Border>
+                        <ContentPresenter Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="track" Property="Background" Value="{StaticResource Success}"/>
+                            <Setter TargetName="knob"  Property="HorizontalAlignment" Value="Right"/>
+                            <Setter TargetName="knob"  Property="Margin" Value="0,0,3,0"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── ListBox used for the preset / rule lists ───────────────────────── -->
+    <Style x:Key="CardList" TargetType="ListBox">
+        <Setter Property="Background"      Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding"         Value="0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin"  Value="0,0,0,4"/>
+                    <Setter Property="Cursor"  Value="Hand"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border x:Name="bd" CornerRadius="6" Padding="10,8"
+                                        Background="{StaticResource BgTertiary}"
+                                        BorderBrush="Transparent" BorderThickness="1">
+                                    <ContentPresenter/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="{StaticResource BgHover}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="bd" Property="Background" Value="#3C4270"/>
+                                        <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Blurple}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

@@ -1,3 +1,11 @@
+// File: MainViewModel.cs
+// Description: Main view-model: connection, manual presets and app settings (auto-detect lives in MainViewModel.AutoDetect.cs).
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-01
+// Last edit date: 2026-10-09
+// Version: 2.0.0
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,10 +18,14 @@ using DiscordStatusUpdater.Services;
 
 namespace DiscordStatusUpdater.ViewModels;
 
-public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
+public sealed partial class MainViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly DiscordRpcService _rpcService;
     private readonly SettingsService _settingsService;
+
+    /// <summary>Shown in the sidebar, About card and status bar; read from the assembly so it cannot drift.</summary>
+    public static string VersionText { get; } =
+        "v" + (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?");
 
     // ── Connection ──────────────────────────────────────────────────────────
     private string _applicationId = string.Empty;
@@ -113,13 +125,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     public string Details
     {
         get => _details;
-        set { _details = value; OnPropertyChanged(); }
+        set { _details = value; OnPropertyChanged(); OnPropertyChanged(nameof(PreviewDetails)); }
     }
 
     public string State
     {
         get => _state;
-        set { _state = value; OnPropertyChanged(); }
+        set { _state = value; OnPropertyChanged(); OnPropertyChanged(nameof(PreviewState)); }
     }
 
     public string LargeImageKey
@@ -250,6 +262,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             () => OpenUrl("https://discord.com/developers/applications"));
 
         LoadData();
+        InitializeAutoDetect();
     }
 
     // ── Data loading ─────────────────────────────────────────────────────────
@@ -265,6 +278,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
         foreach (var preset in _settingsService.LoadPresets())
             Presets.Add(preset);
+
+        LoadRulesFromDisk();
 
         if (Presets.Count == 0) return;
 
@@ -298,6 +313,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 
     private void Disconnect()
     {
+        // An explicit disconnect must stick: otherwise auto-detect would reconnect on the next scan.
+        if (AutoDetectEnabled) AutoDetectEnabled = false;
         _rpcService.Disconnect();
         IsConnected = false;
         IsConnecting = false;
@@ -310,8 +327,12 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         try
         {
-            _rpcService.SetPresence(BuildPresence());
-            StatusBarMessage = "Activity updated!";
+            // The connection may currently belong to an auto-detect rule's own Application ID.
+            PushPresence(ApplicationId.Trim(), BuildPresence());
+            _lastAutoKey = null; // let auto-detect take over again at the next app change
+            StatusBarMessage = AutoDetectEnabled
+                ? "Activity updated — auto-detect resumes at the next app change."
+                : "Activity updated!";
         }
         catch (Exception ex)
         {
@@ -332,57 +353,29 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
-    private RichPresence BuildPresence()
+    /// <summary>Turns the editor fields into a presence. Manual updates use no template values.</summary>
+    private RichPresence BuildPresence() => PresenceBuilder.Build(CurrentEditorPreset(), TemplateContext.Empty);
+
+    private ActivityPreset CurrentEditorPreset() => new()
     {
-        var presence = new RichPresence
-        {
-            Details = NullIfEmpty(Details),
-            State = NullIfEmpty(State)
-        };
-
-        if (!string.IsNullOrWhiteSpace(LargeImageKey) || !string.IsNullOrWhiteSpace(SmallImageKey))
-        {
-            presence.Assets = new Assets
-            {
-                LargeImageKey = NullIfEmpty(LargeImageKey),
-                LargeImageText = NullIfEmpty(LargeImageText),
-                SmallImageKey = NullIfEmpty(SmallImageKey),
-                SmallImageText = NullIfEmpty(SmallImageText)
-            };
-        }
-
-        if (ShowElapsedTime)
-            presence.Timestamps = Timestamps.Now;
-
-        var buttons = new List<DiscordRPC.Button>();
-        if (!string.IsNullOrWhiteSpace(Button1Label) && IsValidUrl(Button1Url))
-            buttons.Add(new DiscordRPC.Button { Label = Button1Label.Trim(), Url = Button1Url.Trim() });
-        if (!string.IsNullOrWhiteSpace(Button2Label) && IsValidUrl(Button2Url))
-            buttons.Add(new DiscordRPC.Button { Label = Button2Label.Trim(), Url = Button2Url.Trim() });
-        if (buttons.Count > 0)
-            presence.Buttons = buttons.ToArray();
-
-        return presence;
-    }
+        Name = CurrentPresetName.Trim(),
+        Details = Details,
+        State = State,
+        LargeImageKey = LargeImageKey,
+        LargeImageText = LargeImageText,
+        SmallImageKey = SmallImageKey,
+        SmallImageText = SmallImageText,
+        ShowElapsedTime = ShowElapsedTime,
+        Button1Label = Button1Label,
+        Button1Url = Button1Url,
+        Button2Label = Button2Label,
+        Button2Url = Button2Url
+    };
 
     // ── Presets ───────────────────────────────────────────────────────────────
     private void SavePreset()
     {
-        var preset = new ActivityPreset
-        {
-            Name = CurrentPresetName.Trim(),
-            Details = Details,
-            State = State,
-            LargeImageKey = LargeImageKey,
-            LargeImageText = LargeImageText,
-            SmallImageKey = SmallImageKey,
-            SmallImageText = SmallImageText,
-            ShowElapsedTime = ShowElapsedTime,
-            Button1Label = Button1Label,
-            Button1Url = Button1Url,
-            Button2Label = Button2Label,
-            Button2Url = Button2Url
-        };
+        var preset = CurrentEditorPreset();
 
         var existing = Presets.Select((p, i) => (p, i)).FirstOrDefault(x => x.p.Name == preset.Name);
         if (existing.p != null)
@@ -456,6 +449,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
             IsConnecting = false;
             SetStatus("Connected", "#23A559");
             StatusBarMessage = "Connected to Discord!";
+            OnConnectedForAutoDetect();
         });
     }
 
@@ -537,14 +531,6 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private static void Dispatch(Action a) =>
         Application.Current?.Dispatcher.Invoke(a);
 
-    private static string? NullIfEmpty(string s) =>
-        string.IsNullOrWhiteSpace(s) ? null : s.Trim();
-
-    private static bool IsValidUrl(string url) =>
-        !string.IsNullOrWhiteSpace(url) &&
-        (url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
-         url.StartsWith("http://", StringComparison.OrdinalIgnoreCase));
-
     private static void OpenUrl(string url)
     {
         try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
@@ -557,5 +543,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    public void Dispose() => _rpcService.Dispose();
+    public void Dispose()
+    {
+        DisposeAutoDetect();
+        _rpcService.Dispose();
+    }
 }

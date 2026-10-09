@@ -1,0 +1,137 @@
+[
+  {
+    "Id": "vscode",
+    "Name": "Visual Studio Code",
+    "Enabled": true,
+    "ProcessNames": "Code, Code - Insiders",
+    "TitleRegex": "",
+    "PresetName": "Auto: Visual Studio Code",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "visualstudio",
+    "Name": "Visual Studio",
+    "Enabled": true,
+    "ProcessNames": "devenv",
+    "TitleRegex": "",
+    "PresetName": "Auto: Visual Studio",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "cursor",
+    "Name": "Cursor",
+    "Enabled": true,
+    "ProcessNames": "Cursor",
+    "TitleRegex": "",
+    "PresetName": "Auto: Cursor",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "jetbrains",
+    "Name": "JetBrains IDE",
+    "Enabled": true,
+    "ProcessNames": "rider64, idea64, pycharm64, webstorm64, phpstorm64, clion64, goland64, datagrip64",
+    "TitleRegex": "",
+    "PresetName": "Auto: JetBrains IDE",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "androidstudio",
+    "Name": "Android Studio",
+    "Enabled": true,
+    "ProcessNames": "studio64",
+    "TitleRegex": "",
+    "PresetName": "Auto: Android Studio",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "wave",
+    "Name": "Wave Terminal",
+    "Enabled": true,
+    "ProcessNames": "Wave",
+    "TitleRegex": "",
+    "PresetName": "Auto: Wave Terminal",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "terminal",
+    "Name": "Windows Terminal",
+    "Enabled": true,
+    "ProcessNames": "WindowsTerminal",
+    "TitleRegex": "",
+    "PresetName": "Auto: Windows Terminal",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "notepadpp",
+    "Name": "Notepad++",
+    "Enabled": true,
+    "ProcessNames": "notepad++",
+    "TitleRegex": "",
+    "PresetName": "Auto: Notepad++",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "obsidian",
+    "Name": "Obsidian",
+    "Enabled": true,
+    "ProcessNames": "Obsidian",
+    "TitleRegex": "",
+    "PresetName": "Auto: Obsidian",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "postman",
+    "Name": "Postman",
+    "Enabled": true,
+    "ProcessNames": "Postman",
+    "TitleRegex": "",
+    "PresetName": "Auto: Postman",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "docker",
+    "Name": "Docker Desktop",
+    "Enabled": true,
+    "ProcessNames": "Docker Desktop",
+    "TitleRegex": "",
+    "PresetName": "Auto: Docker Desktop",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "githubdesktop",
+    "Name": "GitHub Desktop",
+    "Enabled": true,
+    "ProcessNames": "GitHubDesktop",
+    "TitleRegex": "",
+    "PresetName": "Auto: GitHub Desktop",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "ssms",
+    "Name": "SQL Server Management Studio",
+    "Enabled": true,
+    "ProcessNames": "Ssms",
+    "TitleRegex": "",
+    "PresetName": "Auto: SQL Server Management Studio",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "blender",
+    "Name": "Blender",
+    "Enabled": true,
+    "ProcessNames": "blender",
+    "TitleRegex": "",
+    "PresetName": "Auto: Blender",
+    "ApplicationId": ""
+  },
+  {
+    "Id": "unity",
+    "Name": "Unity",
+    "Enabled": true,
+    "ProcessNames": "Unity",
+    "TitleRegex": "",
+    "PresetName": "Auto: Unity",
+    "ApplicationId": ""
+  }
+]

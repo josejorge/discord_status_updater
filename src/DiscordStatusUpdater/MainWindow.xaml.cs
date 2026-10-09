@@ -1,3 +1,11 @@
+// File: MainWindow.xaml.cs
+// Description: Code-behind for the main window: tray-aware minimize/close handling.
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-01
+// Last edit date: 2026-10-09
+// Version: 1.0.1
+
 using System.ComponentModel;
 using System.Windows;
 using DiscordStatusUpdater.Services;

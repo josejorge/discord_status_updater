@@ -1,3 +1,13 @@
+<!--
+File: TODO.md
+Description: Roadmap and completed items.
+Author: Jose-Jorge HERNANDEZ
+Company: Parlee Conseiller, Inc.
+Date: 2026-06-01
+Last edit date: 2026-10-09
+Version: 1.1.0
+-->
+
 # TODO
 
 Items are roughly ordered by priority. Feel free to pick any up!
@@ -25,7 +35,19 @@ Items are roughly ordered by priority. Feel free to pick any up!
 - [ ] **URL validation** feedback inline on button URL fields
 - [ ] **Localization** (i18n) support
 
+## Next ideas (auto-detect)
+
+- [ ] **Validate image keys** against the Discord application's asset list and show real icons in the preview
+- [ ] **Language / file-type small image**: pick the small image from the open file's extension
+- [ ] **Multiple simultaneous activities** (one connection per Application ID)
+- [ ] **Import / export rule packs**
+
 ## Done
+
+- [x] Auto-detect running apps with editable rules, focus-aware winner, debounce and rate limiting (2.0.0)
+- [x] Preset placeholders (`{file}`, `{workspace}`...) and optional `[sections]` (2.0.0)
+- [x] Sidebar UI redesign with live "now detected" card (2.0.0)
+- [x] Unit tests for the detection logic (2.0.0)
 
 - [x] Connect to Discord via Application ID
 - [x] Set Rich Presence (details, state, large/small images, timestamps, buttons)

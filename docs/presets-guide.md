@@ -1,10 +1,20 @@
+<!--
+File: presets-guide.md
+Description: How to create, edit, share and use presets (including placeholders).
+Author: Jose-Jorge HERNANDEZ
+Company: Parlee Conseiller, Inc.
+Date: 2026-06-01
+Last edit date: 2026-10-09
+Version: 1.1.0
+-->
+
 # Presets Guide
 
 Presets let you save your favourite activity configurations and switch between them instantly.
 
 ## Built-in Presets
 
-The app ships with 8 presets in `Resources/Presets/default_presets.json`. These are loaded the first time you run the app. After that, your presets are stored in:
+The app ships with 23 presets (8 general ones plus one per auto-detect rule), compiled into the exe from `Resources/Presets/default_presets.json`. They are loaded the first time you run the app. After that, your presets are stored in:
 
 ```
 %AppData%\DiscordStatusUpdater\presets.json
@@ -12,26 +22,30 @@ The app ships with 8 presets in `Resources/Presets/default_presets.json`. These 
 
 ## Creating a Preset
 
-1. Click **New** to clear all fields
+1. On the **Presets** page click **New** to clear all fields
 2. Fill in your activity fields (Details, State, images, buttons)
 3. Type a name in the **Preset Name** field
-4. Click **Save**
+4. Click **Save preset**
 
 ## Loading a Preset
 
-Select a preset from the **Load Preset** dropdown — the fields update immediately.
+Select a preset in the list on the left; the editor updates immediately.
 
 ## Editing a Preset
 
 1. Load the preset
 2. Change the fields you want
 3. Keep the same Preset Name (or rename it)
-4. Click **Save** — it overwrites the existing preset with that name
+4. Click **Save preset**; it overwrites the existing preset with that name
 
 ## Deleting a Preset
 
-1. Load the preset (or just select it in the dropdown)
+1. Select the preset in the list
 2. Click **Delete**
+
+## Placeholders
+
+Details, State and the image tooltips can contain `{app}`, `{process}`, `{title}`, `{file}` and `{workspace}`; text in `[square brackets]` disappears when a placeholder inside it is empty. They are filled in when a preset is used by an auto-detect rule, e.g. `[Editing {file}]` becomes `Editing main.cs`. When you send a preset by hand there is no detected app, so placeholders expand to nothing. See [auto-detect.md](auto-detect.md).
 
 ## Sharing Presets
 

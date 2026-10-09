@@ -24,6 +24,9 @@ jobs:
       - name: Build
         run: dotnet build src/DiscordStatusUpdater/DiscordStatusUpdater.csproj --no-restore -c Release
 
+      - name: Test
+        run: dotnet test tests/DiscordStatusUpdater.Tests/DiscordStatusUpdater.Tests.csproj -c Release
+
       - name: Publish
         run: |
           dotnet publish src/DiscordStatusUpdater/DiscordStatusUpdater.csproj `

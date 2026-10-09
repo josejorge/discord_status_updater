@@ -1,3 +1,11 @@
+// File: TrayIconService.cs
+// Description: System tray icon with a dark context menu (open, auto-detect, update, clear, exit).
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-12
+// Last edit date: 2026-10-09
+// Version: 1.1.0
+
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,6 +20,10 @@ public sealed class TrayIconService : IDisposable
     public event EventHandler? ExitRequested;
     public event EventHandler? UpdateStatusRequested;
     public event EventHandler? ClearStatusRequested;
+    public event EventHandler? ToggleAutoDetectRequested;
+
+    // Kept so the menu check mark can follow the setting changed elsewhere in the app.
+    private ToolStripMenuItem? _autoDetectItem;
 
     public TrayIconService(Icon? icon = null)
     {
@@ -40,6 +52,11 @@ public sealed class TrayIconService : IDisposable
 
         menu.Items.Add(new ToolStripSeparator());
 
+        _autoDetectItem = new ToolStripMenuItem("Auto-detect apps")
+        { ForeColor = Color.FromArgb(219, 222, 225), CheckOnClick = false };
+        _autoDetectItem.Click += (_, _) => ToggleAutoDetectRequested?.Invoke(this, EventArgs.Empty);
+        menu.Items.Add(_autoDetectItem);
+
         var updateItem = new ToolStripMenuItem("Update Status")
         { ForeColor = Color.FromArgb(219, 222, 225) };
         updateItem.Click += (_, _) => UpdateStatusRequested?.Invoke(this, EventArgs.Empty);
@@ -62,6 +79,12 @@ public sealed class TrayIconService : IDisposable
 
     public void SetTooltip(string text)
         => _notifyIcon.Text = text.Length > 63 ? text[..63] : text;
+
+    /// <summary>Reflects the auto-detect state in the tray menu (called when the setting changes).</summary>
+    public void SetAutoDetectChecked(bool enabled)
+    {
+        if (_autoDetectItem != null) _autoDetectItem.Checked = enabled;
+    }
 
     public void ShowBalloonTip(string message, int timeoutMs = 2500)
         => _notifyIcon.ShowBalloonTip(timeoutMs, "Discord Status Updater", message, ToolTipIcon.None);

@@ -1,3 +1,11 @@
+// File: DiscordRpcService.cs
+// Description: Thin wrapper over the Discord Rich Presence IPC client, able to switch Application IDs at runtime.
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-01
+// Last edit date: 2026-10-09
+// Version: 1.1.0
+
 using DiscordRPC;
 using DiscordRPC.Logging;
 
@@ -14,6 +22,9 @@ public sealed class DiscordRpcService : IDisposable
 
     public bool IsInitialized => _client?.IsInitialized ?? false;
 
+    /// <summary>The Application ID of the live connection, or null when not connected.</summary>
+    public string? CurrentApplicationId { get; private set; }
+
     public void Connect(string applicationId)
     {
         if (string.IsNullOrWhiteSpace(applicationId))
@@ -21,18 +32,25 @@ public sealed class DiscordRpcService : IDisposable
 
         Disconnect();
 
-        _client = new DiscordRpcClient(applicationId)
+        var client = new DiscordRpcClient(applicationId)
         {
             Logger = new ConsoleLogger(LogLevel.Warning)
         };
 
-        _client.OnReady += (_, _) => Connected?.Invoke(this, EventArgs.Empty);
-        _client.OnClose += (_, _) => Disconnected?.Invoke(this, EventArgs.Empty);
-        _client.OnError += (_, e) => ErrorOccurred?.Invoke(this, e.Message);
-        _client.OnConnectionFailed += (_, _) =>
-            ErrorOccurred?.Invoke(this, "Could not connect to Discord — make sure Discord is running.");
+        // Auto-detect swaps Application IDs while the app runs. Events of a client we already replaced
+        // (for instance the Close raised by disposing it) must not look like a real disconnect.
+        client.OnReady += (_, _) => { if (ReferenceEquals(client, _client)) Connected?.Invoke(this, EventArgs.Empty); };
+        client.OnClose += (_, _) => { if (ReferenceEquals(client, _client)) Disconnected?.Invoke(this, EventArgs.Empty); };
+        client.OnError += (_, e) => { if (ReferenceEquals(client, _client)) ErrorOccurred?.Invoke(this, e.Message); };
+        client.OnConnectionFailed += (_, _) =>
+        {
+            if (ReferenceEquals(client, _client))
+                ErrorOccurred?.Invoke(this, "Could not connect to Discord — make sure Discord is running.");
+        };
 
-        _client.Initialize();
+        _client = client;
+        CurrentApplicationId = applicationId;
+        client.Initialize();
     }
 
     public void SetPresence(RichPresence presence)
@@ -47,14 +65,18 @@ public sealed class DiscordRpcService : IDisposable
 
     public void Disconnect()
     {
-        if (_client == null) return;
+        var client = _client;
+        if (client == null) return;
+
+        // Detach first so the events raised while disposing are ignored (see Connect).
+        _client = null;
+        CurrentApplicationId = null;
         try
         {
-            _client.ClearPresence();
-            _client.Dispose();
+            client.ClearPresence();
+            client.Dispose();
         }
         catch { /* best-effort */ }
-        _client = null;
     }
 
     public void Dispose()

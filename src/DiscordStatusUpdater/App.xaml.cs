@@ -1,3 +1,11 @@
+// File: App.xaml.cs
+// Description: Application entry point: wires the tray icon, main window and global error handling.
+// Author: Jose-Jorge HERNANDEZ
+// Company: Parlee Conseiller, Inc.
+// Date: 2026-06-01
+// Last edit date: 2026-10-09
+// Version: 1.1.0
+
 using System.Windows;
 using DiscordStatusUpdater.Services;
 using DiscordStatusUpdater.ViewModels;
@@ -39,6 +47,22 @@ public partial class App : Application
 
         _trayService.ExitRequested += (_, _) => Dispatcher.Invoke(() =>
             window.ForceClose());
+
+        // Tray "Auto-detect apps": toggle the master switch, and keep the menu check mark in sync with it.
+        _trayService.ToggleAutoDetectRequested += (_, _) => Dispatcher.Invoke(() =>
+        {
+            var vm = (MainViewModel)window.DataContext;
+            vm.AutoDetectEnabled = !vm.AutoDetectEnabled;
+        });
+        {
+            var vm = (MainViewModel)window.DataContext;
+            _trayService.SetAutoDetectChecked(vm.AutoDetectEnabled);
+            vm.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(MainViewModel.AutoDetectEnabled))
+                    _trayService.SetAutoDetectChecked(vm.AutoDetectEnabled);
+            };
+        }
 
         _trayService.UpdateStatusRequested += (_, _) => Dispatcher.Invoke(() =>
         {

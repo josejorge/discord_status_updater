@@ -1,3 +1,13 @@
+<!--
+File: discord-app-setup.md
+Description: How to create a Discord application, get its ID and upload Rich Presence art.
+Author: Jose-Jorge HERNANDEZ
+Company: Parlee Conseiller, Inc.
+Date: 2026-06-01
+Last edit date: 2026-10-09
+Version: 1.1.0
+-->
+
 # Discord Application Setup
 
 This guide walks you through creating a Discord Application (needed to get an Application ID and upload custom images).
@@ -45,14 +55,22 @@ These match the built-in presets:
 | `markdown`     | Markdown logo or pen    |
 | `study`        | Book or graduation cap  |
 
+The auto-detect presets use these keys (upload only the tools you use):
+
+`vscode` · `visualstudio` · `cursor` · `jetbrains` · `androidstudio` · `wave` · `terminal` · `notepadpp` · `obsidian` · `postman` · `docker` · `githubdesktop` · `ssms` · `blender` · `unity`
+
 You can use any key name — just make sure what you type in the app matches exactly what you uploaded (case-sensitive).
 
-## 4 — Test It
+## 4 — One application per tool (optional, for auto-detect)
+
+Discord shows **"Playing &lt;application name&gt;"**. If you want your profile to say *Visual Studio Code* rather than the name of your single application, create a separate application per tool (name it exactly like the tool, upload its icon) and paste its ID into the matching rule's **Own Application ID** on the *Auto-Detect* page. Rules without their own ID use the default one. Details: [auto-detect.md](auto-detect.md).
+
+## 5 — Test It
 
 1. Make sure Discord desktop is running and you are logged in
 2. Open Discord Status Updater
-3. Paste your Application ID and click **Connect** (status dot should turn green)
-4. Fill in the fields and click **Update Status**
+3. Paste your Application ID on the Dashboard and click **Connect** (status dot should turn green)
+4. Pick a preset on the *Presets* page and click **Send to Discord now**, or switch on **Auto-detect**
 5. Open Discord — click your own profile, you should see the custom activity
 
 ## Troubleshooting

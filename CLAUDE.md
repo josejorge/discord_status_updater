@@ -1,6 +1,16 @@
+<!--
+File: CLAUDE.md
+Description: Guidance for Claude Code sessions: commands, layout, architecture and gotchas of Discord Status Updater.
+Author: Jose-Jorge HERNANDEZ
+Company: Parlee Conseiller, Inc.
+Date: 2026-06-12
+Last edit date: 2026-10-09
+Version: 2.0.0
+-->
+
 # CLAUDE.md — Discord Status Updater
 
-WPF / .NET 8 desktop app that sets Discord Rich Presence via local IPC. Windows-only.
+WPF / .NET 8 desktop app that sets Discord Rich Presence via local IPC. Windows-only. Since 2.0 it also **detects running apps** (VS Code, Visual Studio, Wave Terminal...) and drives the status automatically from editable rules.
 
 ## Common commands
 
@@ -10,6 +20,12 @@ dotnet run --project src/DiscordStatusUpdater/DiscordStatusUpdater.csproj
 
 # Debug build
 dotnet build src/DiscordStatusUpdater/DiscordStatusUpdater.csproj
+
+# Unit tests (pure detection logic: TitleParser, TemplateEngine, RuleMatcher, AutoDetectService, PresenceBuilder)
+dotnet test tests/DiscordStatusUpdater.Tests/DiscordStatusUpdater.Tests.csproj
+
+# Run against a throw-away settings folder (the %APPDATA% variable is NOT honoured, see Key gotchas)
+$env:DISCORD_STATUS_UPDATER_DATA = "$env:TEMP\dsu-test"; dotnet run --project src/DiscordStatusUpdater/DiscordStatusUpdater.csproj
 
 # Self-contained single-file exe (goes to bin/Release/net8.0-windows/win-x64/publish/)
 dotnet publish src/DiscordStatusUpdater/DiscordStatusUpdater.csproj `
@@ -21,22 +37,35 @@ dotnet publish src/DiscordStatusUpdater/DiscordStatusUpdater.csproj `
 ```
 src/DiscordStatusUpdater/
 ├── Models/
-│   ├── ActivityPreset.cs       # Name + all Rich Presence fields
-│   └── AppSettings.cs          # ApplicationId, last preset, tray/startup toggles
+│   ├── ActivityPreset.cs       # Name + all Rich Presence fields (text fields may contain {tokens})
+│   ├── DetectionRule.cs        # INPC rule: process names, title regex, preset name, optional own App ID
+│   ├── RunningProcess.cs       # Process snapshot + DetectionMatch records (WPF/Process free)
+│   └── AppSettings.cs          # ApplicationId, tray/startup toggles, auto-detect options
 ├── Services/
-│   ├── DiscordRpcService.cs    # Wraps DiscordRpcClient (Lachee NuGet v1.2.1.24)
-│   ├── SettingsService.cs      # JSON R/W → %AppData%\DiscordStatusUpdater\
+│   ├── DiscordRpcService.cs    # Wraps DiscordRpcClient (Lachee NuGet v1.2.1.24); can swap App IDs
+│   ├── SettingsService.cs      # JSON R/W (settings, presets, rules) -> %AppData%\DiscordStatusUpdater\
+│   ├── ProcessScanner.cs       # Process.GetProcesses + Win32 foreground window/title
+│   ├── RuleMatcher.cs          # PURE: which rule/process matches, focus-aware winner
+│   ├── AutoDetectService.cs    # Background poller + 2-scan debounce; scanner is injectable for tests
+│   ├── TemplateEngine.cs       # PURE: {tokens} and [optional sections]
+│   ├── TitleParser.cs          # PURE: "file - folder - App" -> File/Workspace
+│   ├── PresenceBuilder.cs      # ActivityPreset + context -> RichPresence
 │   └── TrayIconService.cs      # WinForms NotifyIcon + dark context menu
 ├── ViewModels/
-│   ├── MainViewModel.cs        # All UI state; hand-rolled MVVM
+│   ├── MainViewModel.cs        # Connection, presets, settings (partial)
+│   ├── MainViewModel.AutoDetect.cs  # Rules editing, detector lifecycle, live card, push/throttle (partial)
 │   └── RelayCommand.cs         # ICommand wrapper
-├── Converters/                 # ColorStringToBrush, InverseBool, StringToVisibility
+├── Controls/PresenceCard.xaml  # Discord-style card used for live status + preset preview
+├── Converters/                 # ColorStringToBrush, InverseBool, InverseBoolToVisibility, StringToVisibility, Equals
 ├── Resources/
-│   ├── Themes/DarkTheme.xaml   # Full WPF style library (Discord dark palette)
-│   └── Presets/default_presets.json
+│   ├── Themes/DarkTheme.xaml   # Style library (Discord dark palette, NavButton, ToggleSwitch, CardList)
+│   └── Presets/                # default_presets.json (23) + default_rules.json (15), embedded as WPF Resources
 ├── App.xaml / App.xaml.cs      # Startup: creates TrayIconService, wires events
-├── MainWindow.xaml             # All UI; WindowStyle=None + WindowChrome
+├── MainWindow.xaml             # Sidebar + 4 pages (Dashboard, AutoDetect, Presets, Settings); WindowChrome
 └── MainWindow.xaml.cs          # Tray-aware close/minimize logic
+tests/DiscordStatusUpdater.Tests/   # xUnit; references the WPF project (net8.0-windows)
+technical_memory/technical_memory.ipynb   # decision log (the "why")
+docs/                           # incl. auto-detect.md and BUGS.md (authoritative gotcha log)
 assets/
 ├── icon.ico                    # App icon (window + tray), embedded as WPF Resource
 └── icon.png                    # Used in hero banner (18×18)
@@ -45,7 +74,10 @@ assets/
 ## Architecture
 
 - **MVVM** — hand-rolled, no third-party framework. `RelayCommand` uses `CommandManager.RequerySuggested` for CanExecute refresh.
-- **Settings** persist to `%AppData%\DiscordStatusUpdater\settings.json` and `presets.json`. Falls back to `Resources/Presets/default_presets.json` on first run.
+- **Settings** persist to `%AppData%\DiscordStatusUpdater\settings.json`, `presets.json` and `rules.json`. The shipped defaults are WPF *Resources* read via pack URIs (they are not files on disk). On first run of a version that has rules, only the presets those rules reference are merged into an existing `presets.json`.
+- **Auto-detect flow** — `AutoDetectService` (thread-pool poll, default 3 s) -> `ProcessScanner` snapshot -> `RuleMatcher.FindMatches/PickWinner` (focused app beats rule order) -> debounce (winner must repeat on 2 scans) -> events -> `MainViewModel.AutoDetect` marshals to the UI thread, renders the preset with `TemplateEngine`, and pushes via `PushPresence`, reconnecting if the rule's own Application ID differs. Title-only refreshes are throttled to one per 15 s (Discord rate limit); app switches go out immediately.
+- **Rules are read from a background thread** through an immutable snapshot (`_rulesSnapshot`); edits mark the snapshot + a 600 ms debounced save (flushed by the 1 s `DispatcherTimer`).
+- **Disconnect switches auto-detect off** on purpose, otherwise the next scan would reconnect.
 - **Tray lifecycle** — `_forceClose` flag in `MainWindow` distinguishes hide-to-tray from real exit. `OnClosing` cancels and hides when `MinimizeToTray=true` and not force-closing. Tray "Exit" and title-bar X both set `_forceClose=true`.
 - **Open with Windows** — writes/removes `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\DiscordStatusUpdater`. Source of truth on load is the registry, not the saved setting.
 
@@ -83,12 +115,28 @@ Icons are embedded as WPF `Resource` items in the csproj and accessible via pack
 GetResourceStream(new Uri("pack://application:,,,/Assets/icon.ico"))
 ```
 
+### Embedded JSON defaults are not files
+`default_presets.json` / `default_rules.json` are `<Resource>` items. Read them with `Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Presets/..."))`; `File.Exists(BaseDirectory\...)` is always false (this silently produced an empty preset list before 2.0).
+
+### `%APPDATA%` variable does not move the settings folder
+`Environment.GetFolderPath(SpecialFolder.ApplicationData)` ignores the env var. Use `DISCORD_STATUS_UPDATER_DATA` for tests/screenshots, or the run will write to the real profile.
+
+### Discord shows the *application* name
+"Playing X" is the Discord application's name, not text we send. Per-tool names need per-rule Application IDs (`DetectionRule.ApplicationId`). `DiscordRpcService.Connect` ignores events from replaced clients (`ReferenceEquals`), otherwise the old client's `OnClose` shows as a disconnect.
+
+### Visibility switching of pages
+`EqualsConverter` returns `Visibility` when the target is a `Visibility`, and `bool` for RadioButton `IsChecked` (TwoWay, writes the parameter back). Pages are all in the tree; do not `x:Name` into them from code-behind.
+
+### Verifying UI changes
+Run the exe with `DISCORD_STATUS_UPDATER_DATA` set, leave the Application ID empty (so nothing is sent to the user's Discord) and drive/screenshot it with UI Automation. Never kill processes by name; only PIDs you started.
+
 ## Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
 | `DiscordRichPresence` (Lachee) | 1.2.1.24 | Discord IPC |
 | `Newtonsoft.Json` | 13.0.3 | Settings serialization |
+| `xunit` + `Microsoft.NET.Test.Sdk` | 2.9.2 / 17.11.1 | Tests only (`tests/`) |
 
 ## Discord color palette (DarkTheme.xaml)
 
