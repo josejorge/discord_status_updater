@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-12
 Last edit date: 2026-10-09
-Version: 2.0.0
+Version: 2.1.0
 -->
 
 # CLAUDE.md — Discord Status Updater
@@ -117,6 +117,9 @@ GetResourceStream(new Uri("pack://application:,,,/Assets/icon.ico"))
 
 ### Embedded JSON defaults are not files
 `default_presets.json` / `default_rules.json` are `<Resource>` items. Read them with `Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Presets/..."))`; `File.Exists(BaseDirectory\...)` is always false (this silently produced an empty preset list before 2.0).
+
+### Shipped Application IDs and empty large image keys
+12 of the 15 rules in `default_rules.json` carry the ID of a Discord application created for that tool (named and iconed like it). Their presets in `default_presets.json` have an **empty `LargeImageKey`** on purpose: with no large image Discord shows the application's own icon, so no Rich Presence art needs uploading. JetBrains, Postman and SSMS have no application and still use the default ID plus image keys. The IDs are public identifiers (fine in the repo); the local reference list `discord_app_ids.txt` is gitignored. A user's existing `rules.json`/`presets.json` is never overwritten, so shipped changes only reach new installs unless the user deletes those files.
 
 ### `%APPDATA%` variable does not move the settings folder
 `Environment.GetFolderPath(SpecialFolder.ApplicationData)` ignores the env var. Use `DISCORD_STATUS_UPDATER_DATA` for tests/screenshots, or the run will write to the real profile.

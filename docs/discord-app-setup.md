@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 1.2.0
+Version: 1.3.0
 -->
 
 # Discord Application Setup
@@ -55,9 +55,9 @@ These match the built-in presets:
 | `markdown`     | Markdown logo or pen    |
 | `study`        | Book or graduation cap  |
 
-The auto-detect presets use these keys (upload only the tools you use):
+Auto-detect: twelve shipped rules (Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity) come with their own ready-made Discord application and **no image key**: Discord shows that application's own icon, so you upload nothing for them. Only the presets of the remaining rules use image keys, which you upload to your default application if you want pictures:
 
-`vscode` · `visualstudio` · `cursor` · `jetbrains` · `androidstudio` · `wave` · `terminal` · `notepadpp` · `obsidian` · `postman` · `docker` · `githubdesktop` · `ssms` · `blender` · `unity`
+`jetbrains` · `postman` · `ssms`
 
 You can use any key name — just make sure what you type in the app matches exactly what you uploaded (case-sensitive).
 
