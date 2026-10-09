@@ -320,5 +320,61 @@
     "Button1Url": "",
     "Button2Label": "",
     "Button2Url": ""
+  },
+  {
+    "Name": "Auto: VMware Workstation",
+    "Details": "Managing virtual machines",
+    "State": "Virtualization",
+    "LargeImageKey": "",
+    "LargeImageText": "VMware Workstation",
+    "SmallImageKey": "",
+    "SmallImageText": "",
+    "ShowElapsedTime": true,
+    "Button1Label": "",
+    "Button1Url": "",
+    "Button2Label": "",
+    "Button2Url": ""
+  },
+  {
+    "Name": "Auto: Tabularis",
+    "Details": "Working with databases",
+    "State": "Database client",
+    "LargeImageKey": "",
+    "LargeImageText": "Tabularis",
+    "SmallImageKey": "",
+    "SmallImageText": "",
+    "ShowElapsedTime": true,
+    "Button1Label": "",
+    "Button1Url": "",
+    "Button2Label": "",
+    "Button2Url": ""
+  },
+  {
+    "Name": "Auto: Remote Desktop Manager",
+    "Details": "Managing remote connections",
+    "State": "Remote access",
+    "LargeImageKey": "",
+    "LargeImageText": "Remote Desktop Manager",
+    "SmallImageKey": "",
+    "SmallImageText": "",
+    "ShowElapsedTime": true,
+    "Button1Label": "",
+    "Button1Url": "",
+    "Button2Label": "",
+    "Button2Url": ""
+  },
+  {
+    "Name": "Auto: OneCommander",
+    "Details": "Managing files",
+    "State": "File manager",
+    "LargeImageKey": "",
+    "LargeImageText": "OneCommander",
+    "SmallImageKey": "",
+    "SmallImageText": "",
+    "ShowElapsedTime": true,
+    "Button1Label": "",
+    "Button1Url": "",
+    "Button2Label": "",
+    "Button2Url": ""
   }
 ]

@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-12
 Last edit date: 2026-10-09
-Version: 2.1.0
+Version: 2.2.0
 -->
 
 # CLAUDE.md — Discord Status Updater
@@ -59,7 +59,7 @@ src/DiscordStatusUpdater/
 ├── Converters/                 # ColorStringToBrush, InverseBool, InverseBoolToVisibility, StringToVisibility, Equals
 ├── Resources/
 │   ├── Themes/DarkTheme.xaml   # Style library (Discord dark palette, NavButton, ToggleSwitch, CardList)
-│   └── Presets/                # default_presets.json (23) + default_rules.json (15), embedded as WPF Resources
+│   └── Presets/                # default_presets.json (27) + default_rules.json (19), embedded as WPF Resources
 ├── App.xaml / App.xaml.cs      # Startup: creates TrayIconService, wires events
 ├── MainWindow.xaml             # Sidebar + 4 pages (Dashboard, AutoDetect, Presets, Settings); WindowChrome
 └── MainWindow.xaml.cs          # Tray-aware close/minimize logic
@@ -119,7 +119,7 @@ GetResourceStream(new Uri("pack://application:,,,/Assets/icon.ico"))
 `default_presets.json` / `default_rules.json` are `<Resource>` items. Read them with `Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Presets/..."))`; `File.Exists(BaseDirectory\...)` is always false (this silently produced an empty preset list before 2.0).
 
 ### Shipped Application IDs and empty large image keys
-12 of the 15 rules in `default_rules.json` carry the ID of a Discord application created for that tool (named and iconed like it). Their presets in `default_presets.json` have an **empty `LargeImageKey`** on purpose: with no large image Discord shows the application's own icon, so no Rich Presence art needs uploading. JetBrains, Postman and SSMS have no application and still use the default ID plus image keys. The IDs are public identifiers (fine in the repo); the local reference list `discord_app_ids.txt` is gitignored. A user's existing `rules.json`/`presets.json` is never overwritten, so shipped changes only reach new installs unless the user deletes those files.
+16 of the 19 rules in `default_rules.json` carry the ID of a Discord application created for that tool (named and iconed like it). Their presets in `default_presets.json` have an **empty `LargeImageKey`** on purpose: with no large image Discord shows the application's own icon, so no Rich Presence art needs uploading. JetBrains, Postman and SSMS have no application and still use the default ID plus image keys. The presets of VMware Workstation, Tabularis, Remote Desktop Manager and OneCommander use **fixed text only** on purpose: their window titles contain connection names, host names, folder paths and VM names. The IDs are public identifiers (fine in the repo); the local reference list `discord_app_ids.txt` is gitignored. A user's existing `rules.json`/`presets.json` is never overwritten, so shipped changes only reach new installs unless the user deletes those files.
 
 ### `%APPDATA%` variable does not move the settings folder
 `Environment.GetFolderPath(SpecialFolder.ApplicationData)` ignores the env var. Use `DISCORD_STATUS_UPDATER_DATA` for tests/screenshots, or the run will write to the real profile.

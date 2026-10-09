@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 2.0.1
+Version: 2.0.2
 -->
 
 # Discord Status Updater
@@ -16,7 +16,7 @@ A Windows desktop application that lets you set fully custom Discord Rich Presen
 
 ## Features
 
-- **Auto-detect (new in 2.0)**: recognises the dev tools you are using (VS Code, Visual Studio, Wave Terminal, JetBrains, Cursor and more) and updates your Discord status by itself, including the file/project you are working on. Fully editable rules, see [docs/auto-detect.md](docs/auto-detect.md). Twelve tools (VS Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity) ship with their own Discord application, so your profile reads "Playing <tool>" with its icon out of the box
+- **Auto-detect (new in 2.0)**: recognises the dev tools you are using (VS Code, Visual Studio, Wave Terminal, JetBrains, Cursor and more) and updates your Discord status by itself, including the file/project you are working on. Fully editable rules, see [docs/auto-detect.md](docs/auto-detect.md). Sixteen tools (Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity, VMware Workstation, Tabularis, Remote Desktop Manager and OneCommander) ship with their own Discord application, so your profile reads "Playing <tool>" with its icon out of the box
 - **Custom Rich Presence** — set Details, State, large/small images, and up to 2 clickable buttons
 - **Preset system** — save, load, and delete named presets for quick switching
 - **Elapsed time** — toggle an "00:00 elapsed" timer that resets when you update your status

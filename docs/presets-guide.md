@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 1.1.0
+Version: 1.2.0
 -->
 
 # Presets Guide
@@ -14,7 +14,7 @@ Presets let you save your favourite activity configurations and switch between t
 
 ## Built-in Presets
 
-The app ships with 23 presets (8 general ones plus one per auto-detect rule), compiled into the exe from `Resources/Presets/default_presets.json`. They are loaded the first time you run the app. After that, your presets are stored in:
+The app ships with 27 presets (8 general ones plus one per auto-detect rule), compiled into the exe from `Resources/Presets/default_presets.json`. They are loaded the first time you run the app. After that, your presets are stored in:
 
 ```
 %AppData%\DiscordStatusUpdater\presets.json

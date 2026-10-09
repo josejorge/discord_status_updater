@@ -133,5 +133,41 @@
     "TitleRegex": "",
     "PresetName": "Auto: Unity",
     "ApplicationId": "1558239955296190614"
+  },
+  {
+    "Id": "vmware",
+    "Name": "VMware Workstation",
+    "Enabled": true,
+    "ProcessNames": "vmware",
+    "TitleRegex": "",
+    "PresetName": "Auto: VMware Workstation",
+    "ApplicationId": "1558259482524524544"
+  },
+  {
+    "Id": "tabularis",
+    "Name": "Tabularis",
+    "Enabled": true,
+    "ProcessNames": "tabularis",
+    "TitleRegex": "",
+    "PresetName": "Auto: Tabularis",
+    "ApplicationId": "1558259792043057232"
+  },
+  {
+    "Id": "rdm",
+    "Name": "Remote Desktop Manager",
+    "Enabled": true,
+    "ProcessNames": "RemoteDesktopManager",
+    "TitleRegex": "",
+    "PresetName": "Auto: Remote Desktop Manager",
+    "ApplicationId": "1558260275877122122"
+  },
+  {
+    "Id": "onecommander",
+    "Name": "OneCommander",
+    "Enabled": true,
+    "ProcessNames": "OneCommander",
+    "TitleRegex": "",
+    "PresetName": "Auto: OneCommander",
+    "ApplicationId": "1558260683580383275"
   }
 ]

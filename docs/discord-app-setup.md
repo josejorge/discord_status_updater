@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 1.3.0
+Version: 1.4.0
 -->
 
 # Discord Application Setup
@@ -55,7 +55,7 @@ These match the built-in presets:
 | `markdown`     | Markdown logo or pen    |
 | `study`        | Book or graduation cap  |
 
-Auto-detect: twelve shipped rules (Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity) come with their own ready-made Discord application and **no image key**: Discord shows that application's own icon, so you upload nothing for them. Only the presets of the remaining rules use image keys, which you upload to your default application if you want pictures:
+Auto-detect: sixteen shipped rules (Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity, VMware Workstation, Tabularis, Remote Desktop Manager and OneCommander) come with their own ready-made Discord application and **no image key**: Discord shows that application's own icon, so you upload nothing for them. Only the presets of the remaining rules use image keys, which you upload to your default application if you want pictures:
 
 `jetbrains` · `postman` · `ssms`
 
@@ -63,7 +63,7 @@ You can use any key name — just make sure what you type in the app matches exa
 
 ## 4 — One application per tool (optional, for auto-detect)
 
-Discord shows **"Playing &lt;application name&gt;"**. If you want your profile to say *Visual Studio Code* rather than the name of your single application, create a separate application per tool (name it exactly like the tool, upload its icon) and paste its ID into the matching rule's **Own Application ID** on the *Auto-Detect* page. Rules without their own ID use the default one. Twelve shipped rules already come with their own application, so you only need this for the rest (JetBrains, Postman, SSMS) or your own tools. Details: [auto-detect.md](auto-detect.md).
+Discord shows **"Playing &lt;application name&gt;"**. If you want your profile to say *Visual Studio Code* rather than the name of your single application, create a separate application per tool (name it exactly like the tool, upload its icon) and paste its ID into the matching rule's **Own Application ID** on the *Auto-Detect* page. Rules without their own ID use the default one. Sixteen shipped rules already come with their own application, so you only need this for the rest (JetBrains, Postman, SSMS) or your own tools. Details: [auto-detect.md](auto-detect.md).
 
 ## 5 — Test It
 

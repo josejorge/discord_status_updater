@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-10-09
 Last edit date: 2026-10-09
-Version: 1.1.0
+Version: 1.2.0
 -->
 
 # Auto-Detect
@@ -40,7 +40,7 @@ A rule has:
 | Title regex (optional) | Only match when the window title matches, e.g. `\.(html\|css)\b` for web files |
 | Own Application ID (optional) | See below |
 
-Use **Add from a running app** to create a rule (and a starter preset) from any open window. Rules ship for VS Code, Visual Studio, Cursor, JetBrains IDEs, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Postman, Docker Desktop, GitHub Desktop, SSMS, Blender and Unity. They are stored in `%AppData%\DiscordStatusUpdater\rules.json`.
+Use **Add from a running app** to create a rule (and a starter preset) from any open window. Nineteen rules ship: VS Code, Visual Studio, Cursor, JetBrains IDEs, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Postman, Docker Desktop, GitHub Desktop, SSMS, Blender, Unity, VMware Workstation, Tabularis, Remote Desktop Manager and OneCommander. They are stored in `%AppData%\DiscordStatusUpdater\rules.json`.
 
 ## Placeholders
 
@@ -62,9 +62,11 @@ Discord displays **"Playing &lt;name of the Discord application&gt;"**. With one
 
 ### Shipped applications
 
-Twelve shipped rules already point at ready-made Discord applications (named and iconed like the tool), so they show "Playing Visual Studio Code", "Playing Wave Terminal" and so on out of the box: Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender and Unity. Their presets leave the large image key empty, which makes Discord show the application's own icon. JetBrains IDE, Postman and SSMS use your default Application ID until you create applications for them. Changing a rule's Own Application ID on the Auto-Detect page overrides the shipped one.
+Sixteen shipped rules already point at ready-made Discord applications (named and iconed like the tool), so they show "Playing Visual Studio Code", "Playing Wave Terminal" and so on out of the box: Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity, VMware Workstation, Tabularis, Remote Desktop Manager and OneCommander. Their presets leave the large image key empty, which makes Discord show the application's own icon. JetBrains IDE, Postman and SSMS use your default Application ID until you create applications for them. Changing a rule's Own Application ID on the Auto-Detect page overrides the shipped one.
 
 ## Privacy
+
+Window titles can reveal more than you expect: Tabularis shows connection names, Remote Desktop Manager shows host names, OneCommander shows the open folder and VMware shows VM names. The presets shipped for those four therefore use fixed text only. Think twice before adding `{title}`, `{file}` or `{workspace}` to them.
 
 Window titles can contain file and project names. Turn off **Show file and project names from window titles** in Settings to publish only the app name. Nothing is sent anywhere except Discord's local IPC socket.
 

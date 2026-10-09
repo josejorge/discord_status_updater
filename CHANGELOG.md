@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 1.2.0
+Version: 1.3.0
 -->
 
 # Changelog
@@ -13,6 +13,16 @@ Version: 1.2.0
 All notable changes to this project will be documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [2.0.1] — 2026-10-09
+
+### Added
+- Four more rules, each with its own Discord application and icon: **VMware Workstation** (`vmware`), **Tabularis** (`tabularis`), **Remote Desktop Manager** (`RemoteDesktopManager`) and **OneCommander** (`OneCommander`). 19 rules and 27 presets now ship; 16 of the rules have their own Discord application
+
+### Changed
+- The presets of these four use **fixed text only** (no `{file}`/`{workspace}`): their window titles expose database/connection names, remote host names, folder paths and VM names, which should not reach a public profile by default
+
+---
 
 ## [2.0.0] — 2026-10-09
 
