@@ -57,3 +57,6 @@ coverage/
 # --- added by security audit patch (2026-07-08) ---
 node_modules/
 .wrangler/
+
+## Local list of Discord application IDs (personal; not for the repo)
+discord_app_ids.txt

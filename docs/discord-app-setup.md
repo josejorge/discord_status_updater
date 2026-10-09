@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 1.1.0
+Version: 1.2.0
 -->
 
 # Discord Application Setup
@@ -63,7 +63,7 @@ You can use any key name — just make sure what you type in the app matches exa
 
 ## 4 — One application per tool (optional, for auto-detect)
 
-Discord shows **"Playing &lt;application name&gt;"**. If you want your profile to say *Visual Studio Code* rather than the name of your single application, create a separate application per tool (name it exactly like the tool, upload its icon) and paste its ID into the matching rule's **Own Application ID** on the *Auto-Detect* page. Rules without their own ID use the default one. Details: [auto-detect.md](auto-detect.md).
+Discord shows **"Playing &lt;application name&gt;"**. If you want your profile to say *Visual Studio Code* rather than the name of your single application, create a separate application per tool (name it exactly like the tool, upload its icon) and paste its ID into the matching rule's **Own Application ID** on the *Auto-Detect* page. Rules without their own ID use the default one. Twelve shipped rules already come with their own application, so you only need this for the rest (JetBrains, Postman, SSMS) or your own tools. Details: [auto-detect.md](auto-detect.md).
 
 ## 5 — Test It
 

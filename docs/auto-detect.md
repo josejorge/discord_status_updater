@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-10-09
 Last edit date: 2026-10-09
-Version: 1.0.0
+Version: 1.1.0
 -->
 
 # Auto-Detect
@@ -59,6 +59,10 @@ Text in `[square brackets]` is **dropped entirely when a placeholder inside it i
 ## Showing the tool's name ("Playing Visual Studio Code")
 
 Discord displays **"Playing &lt;name of the Discord application&gt;"**. With one Application ID every rule shows that same name, and your text goes in Details/State. To get the tool's own name on your profile, create a Discord application named like the tool, upload its icon, and paste its ID into the rule's **Own Application ID**. The app reconnects with the right ID whenever the detected tool changes.
+
+### Shipped applications
+
+Twelve shipped rules already point at ready-made Discord applications (named and iconed like the tool), so they show "Playing Visual Studio Code", "Playing Wave Terminal" and so on out of the box: Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender and Unity. Their presets leave the large image key empty, which makes Discord show the application's own icon. JetBrains IDE, Postman and SSMS use your default Application ID until you create applications for them. Changing a rule's Own Application ID on the Auto-Detect page overrides the shipped one.
 
 ## Privacy
 

@@ -5,7 +5,7 @@ Author: Jose-Jorge HERNANDEZ
 Company: Parlee Conseiller, Inc.
 Date: 2026-06-01
 Last edit date: 2026-10-09
-Version: 1.1.0
+Version: 1.2.0
 -->
 
 # Changelog
@@ -27,6 +27,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `DISCORD_STATUS_UPDATER_DATA` environment variable to relocate the settings folder
 
 ### Changed
+- 12 of the 15 shipped rules now carry their own Discord Application ID (Visual Studio Code, Visual Studio, Cursor, Android Studio, Wave Terminal, Windows Terminal, Notepad++, Obsidian, Docker Desktop, GitHub Desktop, Blender, Unity), so the profile reads "Playing <tool>" with the tool's icon; their presets no longer set a large image key (Discord then shows the application's own icon). JetBrains, Postman and SSMS still use the default Application ID
 - **Redesigned UI**: sidebar navigation (Dashboard, Auto-Detect, Presets, Settings), live "Now detected" card, preset list + editor with live preview, toggle switches; window is now wider (1020x720)
 - Version shown in the UI is read from the assembly
 

@@ -6,7 +6,7 @@
     "ProcessNames": "Code, Code - Insiders",
     "TitleRegex": "",
     "PresetName": "Auto: Visual Studio Code",
-    "ApplicationId": ""
+    "ApplicationId": "1511517201671389234"
   },
   {
     "Id": "visualstudio",
@@ -15,7 +15,7 @@
     "ProcessNames": "devenv",
     "TitleRegex": "",
     "PresetName": "Auto: Visual Studio",
-    "ApplicationId": ""
+    "ApplicationId": "1558234947897139262"
   },
   {
     "Id": "cursor",
@@ -24,7 +24,7 @@
     "ProcessNames": "Cursor",
     "TitleRegex": "",
     "PresetName": "Auto: Cursor",
-    "ApplicationId": ""
+    "ApplicationId": "1558235551981633616"
   },
   {
     "Id": "jetbrains",
@@ -42,7 +42,7 @@
     "ProcessNames": "studio64",
     "TitleRegex": "",
     "PresetName": "Auto: Android Studio",
-    "ApplicationId": ""
+    "ApplicationId": "1558236830636441600"
   },
   {
     "Id": "wave",
@@ -51,7 +51,7 @@
     "ProcessNames": "Wave",
     "TitleRegex": "",
     "PresetName": "Auto: Wave Terminal",
-    "ApplicationId": ""
+    "ApplicationId": "1558232570796179517"
   },
   {
     "Id": "terminal",
@@ -60,7 +60,7 @@
     "ProcessNames": "WindowsTerminal",
     "TitleRegex": "",
     "PresetName": "Auto: Windows Terminal",
-    "ApplicationId": ""
+    "ApplicationId": "1558235187203285012"
   },
   {
     "Id": "notepadpp",
@@ -69,7 +69,7 @@
     "ProcessNames": "notepad++",
     "TitleRegex": "",
     "PresetName": "Auto: Notepad++",
-    "ApplicationId": ""
+    "ApplicationId": "1558238388992352398"
   },
   {
     "Id": "obsidian",
@@ -78,7 +78,7 @@
     "ProcessNames": "Obsidian",
     "TitleRegex": "",
     "PresetName": "Auto: Obsidian",
-    "ApplicationId": ""
+    "ApplicationId": "1558238652427935764"
   },
   {
     "Id": "postman",
@@ -96,7 +96,7 @@
     "ProcessNames": "Docker Desktop",
     "TitleRegex": "",
     "PresetName": "Auto: Docker Desktop",
-    "ApplicationId": ""
+    "ApplicationId": "1558238920414597140"
   },
   {
     "Id": "githubdesktop",
@@ -105,7 +105,7 @@
     "ProcessNames": "GitHubDesktop",
     "TitleRegex": "",
     "PresetName": "Auto: GitHub Desktop",
-    "ApplicationId": ""
+    "ApplicationId": "1558239204285087854"
   },
   {
     "Id": "ssms",
@@ -123,7 +123,7 @@
     "ProcessNames": "blender",
     "TitleRegex": "",
     "PresetName": "Auto: Blender",
-    "ApplicationId": ""
+    "ApplicationId": "1558239524088320141"
   },
   {
     "Id": "unity",
@@ -132,6 +132,6 @@
     "ProcessNames": "Unity",
     "TitleRegex": "",
     "PresetName": "Auto: Unity",
-    "ApplicationId": ""
+    "ApplicationId": "1558239955296190614"
   }
 ]
